@@ -6,18 +6,6 @@ import {
   Pencil, RotateCcw, Trash2, Instagram, ExternalLink, MapPin, MessageSquare, LogOut
 } from "lucide-react";
 
-/* ═══════════════════════ DEVICE STORAGE ═══════════════════════ */
-/* Profiles persist in the browser's localStorage on whatever site hosts this. */
-const storage = {
-  async get(key) {
-    const value = localStorage.getItem(key);
-    return value == null ? null : { key, value };
-  },
-  async set(key, value) { localStorage.setItem(key, value); return { key, value }; },
-  async delete(key) { localStorage.removeItem(key); return { key, deleted: true }; },
-};
-
-
 /* ═══════════════════════ DESIGN TOKENS ═══════════════════════ */
 const THEME = {
   dark: {
@@ -113,69 +101,81 @@ const EQUIP = [
 ];
 
 const REGIONS = [
+  // Front
   { id: "neck", label: "Neck & Traps", side: "both" },
   { id: "shoulder", label: "Shoulders", side: "both" },
   { id: "chest", label: "Chest", side: "front" },
+  { id: "bicep", label: "Biceps", side: "front" },
+  { id: "elbow", label: "Elbows", side: "both" },
+  { id: "forearm", label: "Forearms", side: "both" },
+  { id: "wrist", label: "Wrists", side: "both" },
+  { id: "abs", label: "Abs & Obliques", side: "front" },
+  { id: "hip", label: "Hips & Hip Flexors", side: "both" },
+  { id: "quad", label: "Quads", side: "front" },
+  { id: "knee", label: "Knees (front)", side: "front" },
+  { id: "shin", label: "Shins", side: "front" },
+  { id: "ankle", label: "Ankles", side: "both" },
+  { id: "foot", label: "Feet", side: "both" },
+  // Back
   { id: "upper_back", label: "Upper Back & Lats", side: "back" },
-  { id: "elbow", label: "Elbows", side: "front" },
-  { id: "wrist", label: "Wrists", side: "front" },
+  { id: "tricep", label: "Triceps", side: "back" },
   { id: "lower_back", label: "Lower Back", side: "back" },
-  { id: "hip", label: "Hips & Glutes", side: "both" },
+  { id: "glute", label: "Glutes", side: "back" },
   { id: "hamstring", label: "Hamstrings", side: "back" },
-  { id: "knee", label: "Knees", side: "front" },
+  { id: "back_knee", label: "Back of Knees", side: "back" },
   { id: "calf", label: "Calves", side: "back" },
-  { id: "ankle", label: "Ankles", side: "front" },
+  { id: "achilles", label: "Achilles", side: "back" },
 ];
 const regionLabel = (id) => REGIONS.find(r => r.id === id)?.label || id;
 
 const WORKOUTS = {
   1: [
     { slot: "Lower Body", sets: "2 × 10", base: { none: "Bodyweight Squats", basic: "Goblet Squats", gym: "Leg Press (light)" },
-      alt: { knee: "Seated Leg Extensions (band)", hip: "Glute Bridges", ankle: "Seated Knee Extensions", hamstring: "Wall Sit", lower_back: "Supported Sit-to-Stand" } },
+      alt: { knee: "Seated Leg Extensions (band)", back_knee: "Glute Bridges", hip: "Glute Bridges", glute: "Wall Sit", quad: "Glute Bridges", ankle: "Seated Knee Extensions", foot: "Seated Knee Extensions", shin: "Glute Bridges", hamstring: "Wall Sit", lower_back: "Supported Sit-to-Stand" } },
     { slot: "Upper Body", sets: "2 × 10", base: { none: "Wall Push-Ups", basic: "Incline DB Press", gym: "Chest Press Machine" },
-      alt: { shoulder: "Standing Chest Squeeze", wrist: "Fist Wall Push-Ups", elbow: "Isometric Chest Press", chest: "Band Pull-Aparts", neck: "Supported Incline Press" } },
+      alt: { shoulder: "Standing Chest Squeeze", wrist: "Fist Wall Push-Ups", forearm: "Isometric Chest Press", bicep: "Band Pull-Aparts", tricep: "Band Pull-Aparts", elbow: "Isometric Chest Press", chest: "Band Pull-Aparts", neck: "Supported Incline Press" } },
     { slot: "Core", sets: "2 × 30s", base: { none: "Standing Marches", basic: "Seated Band Rotations", gym: "Cable Woodchop (light)" },
-      alt: { lower_back: "Pelvic Tilts", neck: "Supported Dead Bug" } },
+      alt: { lower_back: "Pelvic Tilts", abs: "Pelvic Tilts", hip: "Supported Dead Bug", neck: "Supported Dead Bug" } },
     { slot: "Cardio", sets: "5 min", base: { none: "Walk in Place", basic: "Low Step-Ups", gym: "Recumbent Bike" },
-      alt: { knee: "Seated Arm Cycle", ankle: "Seated Arm Cycle", calf: "Recumbent Bike (low resistance)" } },
+      alt: { knee: "Seated Arm Cycle", back_knee: "Seated Arm Cycle", ankle: "Seated Arm Cycle", foot: "Seated Arm Cycle", achilles: "Seated Arm Cycle", shin: "Seated Arm Cycle", calf: "Recumbent Bike (low resistance)" } },
     { slot: "Mobility", sets: "2 min", base: { none: "Neck & Shoulder Rolls", basic: "Band Pull-Aparts", gym: "Foam Roll Full Body" },
-      alt: { neck: "Gentle Shoulder Rolls Only" } },
+      alt: { neck: "Gentle Shoulder Rolls Only", shoulder: "Gentle Neck Rolls Only" } },
   ],
   2: [
     { slot: "Lower Body", sets: "3 × 12", base: { none: "Split Squats", basic: "DB Romanian Deadlift", gym: "Smith Machine Squat" },
-      alt: { knee: "Box Squats (high)", hip: "Hip Thrusts", hamstring: "Leg Press (short range)", ankle: "Seated Leg Press", lower_back: "Goblet Box Squat" } },
+      alt: { knee: "Box Squats (high)", back_knee: "Hip Thrusts", hip: "Hip Thrusts", glute: "Leg Press (short range)", quad: "Hip Thrusts", hamstring: "Leg Press (short range)", ankle: "Seated Leg Press", foot: "Seated Leg Press", shin: "Seated Leg Press", lower_back: "Goblet Box Squat" } },
     { slot: "Push", sets: "3 × 10", base: { none: "Push-Ups", basic: "DB Bench Press", gym: "Chest Press Machine" },
-      alt: { shoulder: "Neutral-Grip Floor Press", wrist: "Fist Push-Ups", elbow: "Machine Chest Press", chest: "Incline DB Press (light)", neck: "Supported Machine Press" } },
+      alt: { shoulder: "Neutral-Grip Floor Press", wrist: "Fist Push-Ups", forearm: "Machine Chest Press", tricep: "Incline DB Press (light)", bicep: "Machine Chest Press", elbow: "Machine Chest Press", chest: "Incline DB Press (light)", neck: "Supported Machine Press" } },
     { slot: "Pull", sets: "3 × 10", base: { none: "Band Rows", basic: "DB Bent-Over Rows", gym: "Seated Cable Row" },
-      alt: { lower_back: "Chest-Supported Rows", upper_back: "Single-Arm Cable Row", elbow: "Straight-Arm Pulldown" } },
+      alt: { lower_back: "Chest-Supported Rows", upper_back: "Single-Arm Cable Row", bicep: "Straight-Arm Pulldown", forearm: "Chest-Supported Rows", wrist: "Straight-Arm Pulldown", elbow: "Straight-Arm Pulldown" } },
     { slot: "Core", sets: "3 × 40s", base: { none: "Plank", basic: "Weighted Dead Bug", gym: "Cable Crunch" },
-      alt: { lower_back: "Dead Bug (bodyweight)", wrist: "Forearm Plank", neck: "Dead Bug (head supported)" } },
+      alt: { lower_back: "Dead Bug (bodyweight)", abs: "Dead Bug (bodyweight)", wrist: "Forearm Plank", shoulder: "Dead Bug (bodyweight)", neck: "Dead Bug (head supported)" } },
     { slot: "Cardio", sets: "12 min", base: { none: "Brisk Interval Walk", basic: "Jump Rope Intervals", gym: "Bike Intervals" },
-      alt: { knee: "Rowing Machine", ankle: "Rowing Machine", calf: "Bike Intervals (seated)" } },
+      alt: { knee: "Rowing Machine", back_knee: "Rowing Machine", ankle: "Rowing Machine", foot: "Rowing Machine", achilles: "Rowing Machine", shin: "Rowing Machine", calf: "Bike Intervals (seated)" } },
   ],
   3: [
     { slot: "Lower Body", sets: "4 × 8", base: { none: "Bulgarian Split Squats", basic: "DB Front Squat", gym: "Barbell Back Squat" },
-      alt: { knee: "Trap Bar Deadlift", hip: "Sumo Deadlift", hamstring: "Front Squat (moderate)", ankle: "Leg Press", lower_back: "Belt Squat / Leg Press" } },
+      alt: { knee: "Trap Bar Deadlift", back_knee: "Trap Bar Deadlift", hip: "Sumo Deadlift", glute: "Front Squat (moderate)", quad: "Trap Bar Deadlift", hamstring: "Front Squat (moderate)", ankle: "Leg Press", foot: "Leg Press", shin: "Leg Press", lower_back: "Belt Squat / Leg Press" } },
     { slot: "Push", sets: "4 × 8", base: { none: "Decline Push-Ups", basic: "DB Overhead Press", gym: "Barbell Bench Press" },
-      alt: { shoulder: "Landmine Press", wrist: "Neutral-Grip DB Press", elbow: "Machine Press", chest: "Incline Press (moderate)", neck: "Seated Machine Press" } },
+      alt: { shoulder: "Landmine Press", wrist: "Neutral-Grip DB Press", forearm: "Machine Press", tricep: "Incline Press (moderate)", bicep: "Machine Press", elbow: "Machine Press", chest: "Incline Press (moderate)", neck: "Seated Machine Press" } },
     { slot: "Pull", sets: "4 × 8", base: { none: "Towel Rows", basic: "Renegade Rows", gym: "Weighted Pull-Ups" },
-      alt: { lower_back: "Chest-Supported T-Bar Row", upper_back: "Neutral-Grip Lat Pulldown", elbow: "Lat Pulldown (light)" } },
+      alt: { lower_back: "Chest-Supported T-Bar Row", upper_back: "Neutral-Grip Lat Pulldown", bicep: "Straight-Arm Pulldown", forearm: "Chest-Supported T-Bar Row", wrist: "Straight-Arm Pulldown", elbow: "Lat Pulldown (light)" } },
     { slot: "Rotation", sets: "3 × 12", base: { none: "Bicycle Crunches", basic: "Pallof Press", gym: "Cable Anti-Rotation" },
-      alt: { lower_back: "Bird Dog", neck: "Pallof Press (standing)" } },
+      alt: { lower_back: "Bird Dog", abs: "Bird Dog", hip: "Pallof Press (standing)", neck: "Pallof Press (standing)" } },
     { slot: "Conditioning", sets: "15 min", base: { none: "Sprint Intervals", basic: "Kettlebell Circuit", gym: "Assault Bike Intervals" },
-      alt: { knee: "Row Intervals", ankle: "Bike Intervals", calf: "Row Intervals", hip: "Swim or Row Intervals" } },
+      alt: { knee: "Row Intervals", back_knee: "Row Intervals", ankle: "Bike Intervals", foot: "Bike Intervals", achilles: "Bike Intervals", shin: "Bike Intervals", calf: "Row Intervals", glute: "Swim or Row Intervals", hip: "Swim or Row Intervals" } },
   ],
   4: [
     { slot: "Lower Body", sets: "5 × 5", base: { none: "Pistol Squat Progression", basic: "Heavy Bulgarian Split Squat", gym: "Barbell Back Squat (heavy)" },
-      alt: { knee: "Hex Bar Deadlift", hip: "Sumo Deadlift (heavy)", hamstring: "Front Squat", ankle: "Leg Press (heavy)", lower_back: "Belt Squat" } },
+      alt: { knee: "Hex Bar Deadlift", back_knee: "Hex Bar Deadlift", hip: "Sumo Deadlift (heavy)", glute: "Front Squat", quad: "Hex Bar Deadlift", hamstring: "Front Squat", ankle: "Leg Press (heavy)", foot: "Leg Press (heavy)", shin: "Leg Press (heavy)", lower_back: "Belt Squat" } },
     { slot: "Push", sets: "5 × 5", base: { none: "Plyo Push-Ups", basic: "Heavy DB Bench", gym: "Barbell Bench (heavy)" },
-      alt: { shoulder: "Floor Press", wrist: "Neutral-Grip Floor Press", elbow: "Slingshot Bench", chest: "Incline Bench (moderate)", neck: "Machine Chest Press" } },
+      alt: { shoulder: "Floor Press", wrist: "Neutral-Grip Floor Press", forearm: "Machine Chest Press", tricep: "Incline Bench (moderate)", bicep: "Machine Chest Press", elbow: "Slingshot Bench", chest: "Incline Bench (moderate)", neck: "Machine Chest Press" } },
     { slot: "Pull", sets: "5 × 5", base: { none: "Weighted Pull-Ups", basic: "Heavy Single-Arm Row", gym: "Barbell Row (heavy)" },
-      alt: { lower_back: "Strict Pull-Ups", upper_back: "Chest-Supported Row", elbow: "Lat Pulldown (heavy)" } },
+      alt: { lower_back: "Strict Pull-Ups", upper_back: "Chest-Supported Row", bicep: "Straight-Arm Pulldown", forearm: "Chest-Supported Row", wrist: "Lat Pulldown (heavy)", elbow: "Lat Pulldown (heavy)" } },
     { slot: "Power", sets: "5 × 3", base: { none: "Broad Jumps", basic: "Heavy KB Swings", gym: "Power Cleans" },
-      alt: { knee: "Med Ball Slams", ankle: "Med Ball Slams", lower_back: "Med Ball Chest Throws", calf: "Med Ball Slams" } },
+      alt: { knee: "Med Ball Slams", back_knee: "Med Ball Slams", ankle: "Med Ball Slams", foot: "Med Ball Slams", achilles: "Med Ball Slams", shin: "Med Ball Slams", quad: "Med Ball Slams", lower_back: "Med Ball Chest Throws", calf: "Med Ball Slams" } },
     { slot: "Conditioning", sets: "20 min", base: { none: "Sprint Intervals", basic: "Complex Circuit", gym: "Prowler + Bike Intervals" },
-      alt: { knee: "Bike Sprints", ankle: "Bike Sprints", calf: "Row Intervals", hip: "Row Intervals" } },
+      alt: { knee: "Bike Sprints", back_knee: "Bike Sprints", ankle: "Bike Sprints", foot: "Bike Sprints", achilles: "Bike Sprints", shin: "Bike Sprints", calf: "Row Intervals", glute: "Row Intervals", hip: "Row Intervals" } },
   ],
 };
 
@@ -816,6 +816,7 @@ function AnatomyPicker({ c, selected, onToggle }) {
   return (
     <div>
       <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+        {/* ── FRONT ── */}
         <div style={{ flex: 1, maxWidth: 155 }}>
           <div style={{ fontFamily: "Inter", fontSize: 9.5, fontWeight: 800, letterSpacing: 1,
             color: c.muted, textAlign: "center", marginBottom: 4 }}>FRONT</div>
@@ -833,24 +834,28 @@ function AnatomyPicker({ c, selected, onToggle }) {
               <path d="M39 42 Q50 40 50 40 L50 60 Q42 62 37 56 Z" fill={fill("chest")} />
               <path d="M61 42 Q50 40 50 40 L50 60 Q58 62 63 56 Z" fill={fill("chest")} />
             </R>
-            <g opacity=".85">
+            <R id="abs">
               {[0, 1, 2].map(i => (
                 <React.Fragment key={i}>
-                  <rect x="43" y={64 + i * 9} width="6.5" height="7" rx="2" fill={skin} />
-                  <rect x="50.5" y={64 + i * 9} width="6.5" height="7" rx="2" fill={skin} />
+                  <rect x="43" y={64 + i * 9} width="6.5" height="7" rx="2" fill={fill("abs")} />
+                  <rect x="50.5" y={64 + i * 9} width="6.5" height="7" rx="2" fill={fill("abs")} />
                 </React.Fragment>
               ))}
-              <path d="M38 60 Q40 78 44 92 L40 92 Q35 76 35 60 Z" fill={skin} opacity=".8" />
-              <path d="M62 60 Q60 78 56 92 L60 92 Q65 76 65 60 Z" fill={skin} opacity=".8" />
-            </g>
-            <ellipse cx="27" cy="60" rx="6.5" ry="12" fill={skin} opacity=".85" />
-            <ellipse cx="73" cy="60" rx="6.5" ry="12" fill={skin} opacity=".85" />
+              <path d="M38 60 Q40 78 44 92 L40 92 Q35 76 35 60 Z" fill={fill("abs")} opacity=".85" />
+              <path d="M62 60 Q60 78 56 92 L60 92 Q65 76 65 60 Z" fill={fill("abs")} opacity=".85" />
+            </R>
+            <R id="bicep">
+              <ellipse cx="27" cy="60" rx="6.5" ry="12" fill={fill("bicep")} />
+              <ellipse cx="73" cy="60" rx="6.5" ry="12" fill={fill("bicep")} />
+            </R>
             <R id="elbow">
               <circle cx="25" cy="74" r="5" fill={fill("elbow")} />
               <circle cx="75" cy="74" r="5" fill={fill("elbow")} />
             </R>
-            <ellipse cx="23" cy="88" rx="5.5" ry="11" fill={skin} opacity=".85" />
-            <ellipse cx="77" cy="88" rx="5.5" ry="11" fill={skin} opacity=".85" />
+            <R id="forearm">
+              <ellipse cx="23" cy="88" rx="5.5" ry="11" fill={fill("forearm")} />
+              <ellipse cx="77" cy="88" rx="5.5" ry="11" fill={fill("forearm")} />
+            </R>
             <R id="wrist">
               <rect x="18" y="99" width="10" height="6" rx="3" fill={fill("wrist")} />
               <rect x="72" y="99" width="10" height="6" rx="3" fill={fill("wrist")} />
@@ -860,23 +865,30 @@ function AnatomyPicker({ c, selected, onToggle }) {
             <R id="hip">
               <path d="M37 92 Q50 96 63 92 L60 106 Q50 110 40 106 Z" fill={fill("hip")} />
             </R>
-            <path d="M40 106 Q44 128 43 146 L34 146 Q34 124 38 106 Z" fill={skin} opacity=".9" />
-            <path d="M60 106 Q56 128 57 146 L66 146 Q66 124 62 106 Z" fill={skin} opacity=".9" />
+            <R id="quad">
+              <path d="M40 106 Q44 128 43 146 L34 146 Q34 124 38 106 Z" fill={fill("quad")} />
+              <path d="M60 106 Q56 128 57 146 L66 146 Q66 124 62 106 Z" fill={fill("quad")} />
+            </R>
             <R id="knee">
               <ellipse cx="39" cy="153" rx="7" ry="6.5" fill={fill("knee")} />
               <ellipse cx="61" cy="153" rx="7" ry="6.5" fill={fill("knee")} />
             </R>
-            <path d="M35 160 Q37 176 38 188 L44 188 Q43 174 43 160 Z" fill={skin} opacity=".85" />
-            <path d="M65 160 Q63 176 62 188 L56 188 Q57 174 57 160 Z" fill={skin} opacity=".85" />
+            <R id="shin">
+              <path d="M35 160 Q37 176 38 188 L44 188 Q43 174 43 160 Z" fill={fill("shin")} />
+              <path d="M65 160 Q63 176 62 188 L56 188 Q57 174 57 160 Z" fill={fill("shin")} />
+            </R>
             <R id="ankle">
               <rect x="34" y="189" width="11" height="7" rx="3.5" fill={fill("ankle")} />
               <rect x="55" y="189" width="11" height="7" rx="3.5" fill={fill("ankle")} />
             </R>
-            <ellipse cx="39" cy="201" rx="7" ry="4.5" fill={skin} opacity=".6" />
-            <ellipse cx="61" cy="201" rx="7" ry="4.5" fill={skin} opacity=".6" />
+            <R id="foot">
+              <ellipse cx="39" cy="201" rx="7" ry="4.5" fill={fill("foot")} />
+              <ellipse cx="61" cy="201" rx="7" ry="4.5" fill={fill("foot")} />
+            </R>
           </svg>
         </div>
 
+        {/* ── BACK ── */}
         <div style={{ flex: 1, maxWidth: 155 }}>
           <div style={{ fontFamily: "Inter", fontSize: 9.5, fontWeight: 800, letterSpacing: 1,
             color: c.muted, textAlign: "center", marginBottom: 4 }}>BACK</div>
@@ -897,34 +909,52 @@ function AnatomyPicker({ c, selected, onToggle }) {
             <R id="lower_back">
               <path d="M39 78 Q50 74 61 78 L58 94 Q50 98 42 94 Z" fill={fill("lower_back")} />
             </R>
-            <ellipse cx="27" cy="60" rx="6.5" ry="12" fill={skin} opacity=".85" />
-            <ellipse cx="73" cy="60" rx="6.5" ry="12" fill={skin} opacity=".85" />
-            <ellipse cx="24" cy="84" rx="5.5" ry="13" fill={skin} opacity=".8" />
-            <ellipse cx="76" cy="84" rx="5.5" ry="13" fill={skin} opacity=".8" />
-            <ellipse cx="23" cy="105" rx="5" ry="6.5" fill={skin} opacity=".55" />
-            <ellipse cx="77" cy="105" rx="5" ry="6.5" fill={skin} opacity=".55" />
-            <R id="hip">
-              <ellipse cx="42" cy="104" rx="10" ry="10" fill={fill("hip")} />
-              <ellipse cx="58" cy="104" rx="10" ry="10" fill={fill("hip")} />
+            <R id="tricep">
+              <ellipse cx="27" cy="60" rx="6.5" ry="12" fill={fill("tricep")} />
+              <ellipse cx="73" cy="60" rx="6.5" ry="12" fill={fill("tricep")} />
+            </R>
+            <R id="elbow">
+              <circle cx="25" cy="74" r="4.5" fill={fill("elbow")} />
+              <circle cx="75" cy="74" r="4.5" fill={fill("elbow")} />
+            </R>
+            <R id="forearm">
+              <ellipse cx="24" cy="88" rx="5.5" ry="11" fill={fill("forearm")} />
+              <ellipse cx="76" cy="88" rx="5.5" ry="11" fill={fill("forearm")} />
+            </R>
+            <R id="wrist">
+              <rect x="19" y="99" width="10" height="6" rx="3" fill={fill("wrist")} />
+              <rect x="71" y="99" width="10" height="6" rx="3" fill={fill("wrist")} />
+            </R>
+            <R id="glute">
+              <ellipse cx="42" cy="104" rx="10" ry="10" fill={fill("glute")} />
+              <ellipse cx="58" cy="104" rx="10" ry="10" fill={fill("glute")} />
             </R>
             <R id="hamstring">
-              <path d="M34 114 Q36 132 37 148 L45 148 Q45 130 44 114 Z" fill={fill("hamstring")} />
-              <path d="M66 114 Q64 132 63 148 L55 148 Q55 130 56 114 Z" fill={fill("hamstring")} />
+              <path d="M34 114 Q36 130 37 144 L45 144 Q45 128 44 114 Z" fill={fill("hamstring")} />
+              <path d="M66 114 Q64 130 63 144 L55 144 Q55 128 56 114 Z" fill={fill("hamstring")} />
             </R>
-            <ellipse cx="41" cy="154" rx="6" ry="4" fill={skin} opacity=".7" />
-            <ellipse cx="59" cy="154" rx="6" ry="4" fill={skin} opacity=".7" />
+            <R id="back_knee">
+              <ellipse cx="40" cy="152" rx="7" ry="6" fill={fill("back_knee")} />
+              <ellipse cx="60" cy="152" rx="7" ry="6" fill={fill("back_knee")} />
+            </R>
             <R id="calf">
-              <path d="M35 160 Q33 174 38 188 L45 188 Q46 172 44 160 Z" fill={fill("calf")} />
-              <path d="M65 160 Q67 174 62 188 L55 188 Q54 172 56 160 Z" fill={fill("calf")} />
+              <path d="M35 160 Q33 174 38 186 L45 186 Q46 172 44 160 Z" fill={fill("calf")} />
+              <path d="M65 160 Q67 174 62 186 L55 186 Q54 172 56 160 Z" fill={fill("calf")} />
             </R>
-            <ellipse cx="41" cy="196" rx="5" ry="5" fill={skin} opacity=".55" />
-            <ellipse cx="59" cy="196" rx="5" ry="5" fill={skin} opacity=".55" />
+            <R id="achilles">
+              <rect x="37" y="187" width="7" height="8" rx="3" fill={fill("achilles")} />
+              <rect x="56" y="187" width="7" height="8" rx="3" fill={fill("achilles")} />
+            </R>
+            <R id="foot">
+              <ellipse cx="40" cy="199" rx="6.5" ry="4.5" fill={fill("foot")} />
+              <ellipse cx="60" cy="199" rx="6.5" ry="4.5" fill={fill("foot")} />
+            </R>
           </svg>
         </div>
       </div>
 
       <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.muted, textAlign: "center", marginTop: 10, lineHeight: 1.5 }}>
-        Tap any muscle or joint that's a problem area.
+        Tap any muscle or joint that's a problem area — front or back.
       </div>
 
       {selected.length > 0 && (
@@ -2540,11 +2570,6 @@ function RewardsScreen({ c, p, rewards, setRewards, onBack, onClaim, toast }) {
 
   return (
     <div style={{ padding: "18px 18px 100px" }}>
-      <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
-        color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 14 }}>
-        <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Home</span>
-      </button>
-
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>MY REWARDS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18, lineHeight: 1.55 }}>
         Pick a treat, pick the streak that earns it. Totally optional — turn it on or off whenever you want.
@@ -2689,7 +2714,7 @@ function RewardsScreen({ c, p, rewards, setRewards, onBack, onClaim, toast }) {
 }
 
 /* ═══════════════════════ PROFILE ═══════════════════════ */
-function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onProgress, toast }) {
+function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onProgress, toast, onAdmin }) {
   const [edit, setEdit] = useState(false);
 
   const handleSave = (draft) => {
@@ -2880,6 +2905,15 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
         ))}
       </div>
 
+      <button onClick={onAdmin} style={{
+        width: "100%", marginTop: 18, padding: "13px 16px", borderRadius: 13, cursor: "pointer",
+        border: `1px solid ${c.border}`, background: "transparent", color: c.muted,
+        fontFamily: "Inter", fontWeight: 700, fontSize: 12.5,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+      }}>
+        <Shield size={14} /> Admin Access
+      </button>
+
       <SignOutButton c={c} onSignOut={onSignOut} />
     </div>
   );
@@ -3060,11 +3094,158 @@ function LevelUp({ c, data, onClose, gender }) {
   );
 }
 
+/* ═══════════════════════ ADMIN ═══════════════════════ */
+/* Reached from Profile with the access code. NOTE: this reads only what is
+   stored on THIS device — there is no server, so it cannot see other users. */
+const ADMIN_CODE = "6161";
+
+function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
+  const [code, setCode] = useState("");
+  const [ok, setOk] = useState(false);
+  const [raw, setRaw] = useState(null);
+
+  useEffect(() => {
+    if (!ok) return;
+    (async () => {
+      try {
+        const r = await window.storage.get("aac-state");
+        setRaw(r?.value || null);
+      } catch (e) { setRaw(null); }
+    })();
+  }, [ok]);
+
+  if (!ok) return (
+    <div style={{ padding: "18px 18px 100px" }}>
+      <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
+        color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
+        <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
+      </button>
+      <Disp c={c} size={30} style={{ marginBottom: 6 }}>ADMIN</Disp>
+      <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 20, lineHeight: 1.55 }}>
+        Enter the access code to view account tools.
+      </div>
+      <Card c={c}>
+        <Label c={c}>Access Code</Label>
+        <input value={code} onChange={e => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
+          onKeyDown={e => { if (e.key === "Enter" && code === ADMIN_CODE) setOk(true); }}
+          placeholder="••••" inputMode="numeric" type="password"
+          style={inputSt(c, { fontFamily: "'JetBrains Mono'", fontSize: 20, letterSpacing: 6, textAlign: "center" })} />
+        <button onClick={() => code === ADMIN_CODE ? setOk(true) : toast("Incorrect code")}
+          style={{ ...btn(c, !code), marginTop: 14 }}>
+          Unlock <Shield size={17} />
+        </button>
+      </Card>
+    </div>
+  );
+
+  const level = LEVELS.find(l => l.id === p.level);
+  const dLeft = daysUntil(p.eventDate);
+  const Row = ({ k, v }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "7px 0",
+      borderBottom: `1px solid ${c.border}` }}>
+      <span style={{ fontFamily: "Inter", fontSize: 12.5, color: c.muted }}>{k}</span>
+      <span style={{ fontFamily: "Inter", fontSize: 12.5, color: c.text, fontWeight: 700, textAlign: "right" }}>{v}</span>
+    </div>
+  );
+
+  const copyData = () => {
+    try {
+      navigator.clipboard.writeText(raw || "no data");
+      toast("Account data copied to clipboard");
+    } catch (e) { toast("Copy not supported on this device"); }
+  };
+
+  return (
+    <div style={{ padding: "18px 18px 100px" }}>
+      <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
+        color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
+        <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
+      </button>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 6 }}>
+        <Disp c={c} size={30}>ADMIN</Disp>
+        <span style={{ background: c.turq, color: "#06231F", borderRadius: 6, padding: "3px 8px",
+          fontFamily: "Inter", fontSize: 9, fontWeight: 900, letterSpacing: 1 }}>UNLOCKED</span>
+      </div>
+
+      <div style={{ background: c.redDim, border: `1px solid ${c.red}`, borderRadius: 13, padding: 13,
+        marginBottom: 16, display: "flex", gap: 10, alignItems: "flex-start" }}>
+        <ShieldAlert size={16} color={c.red} style={{ flexShrink: 0, marginTop: 1 }} />
+        <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.text, lineHeight: 1.55 }}>
+          This device only. The app has no server yet, so it can't show other people's accounts.
+          Cross-user tracking needs logins and a database — see the notes below.
+        </div>
+      </div>
+
+      <Label c={c}>This Account</Label>
+      <Card c={c} style={{ marginBottom: 16, paddingBlock: 8 }}>
+        <Row k="Name" v={p.name || "—"} />
+        <Row k="Email" v={p.email || "—"} />
+        <Row k="Phone" v={p.phone || "—"} />
+        <Row k="Plan" v={p.tier.toUpperCase()} />
+        <Row k="Level" v={`${level.name} (L${level.id})`} />
+        <Row k="Coach" v={COACHES[p.gender === "female" ? "female" : "male"].name} />
+        <Row k="Event" v={dLeft !== null ? `${EVENTS.find(e => e.id === p.event)?.label} · ${dLeft}d` : "—"} />
+      </Card>
+
+      <Label c={c}>Activity</Label>
+      <Card c={c} style={{ marginBottom: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 12 }}>
+          {[["Workouts", p.workouts], ["Streak", p.streak], ["Best", p.best],
+            ["XP", p.xp], ["Freezes", p.freezes], ["Rewards", rewards.list.length]].map(([k, v]) => (
+            <div key={k} style={{ textAlign: "center", background: c.bgEl2, borderRadius: 11, padding: "10px 4px" }}>
+              <div style={{ fontFamily: "'JetBrains Mono'", fontSize: 17, fontWeight: 700, color: c.turq }}>{v}</div>
+              <div style={{ fontFamily: "Inter", fontSize: 9, color: c.muted, marginTop: 3, fontWeight: 700 }}>{k}</div>
+            </div>
+          ))}
+        </div>
+        <Row k="Last workout" v={p.lastDone || "never"} />
+        <Row k="Water today" v={`${water.oz} / ${water.goal} oz`} />
+        <Row k="Meals logged" v={cals.entries.length} />
+        <Row k="Custom workouts" v={Object.keys(custom).length} />
+        <Row k="Flagged areas" v={p.injuries.length ? p.injuries.map(regionLabel).join(", ") : "none"} />
+      </Card>
+
+      <Label c={c}>Tools</Label>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
+        <button onClick={copyData} style={{
+          padding: "13px 16px", borderRadius: 13, cursor: "pointer", textAlign: "left",
+          border: `1px solid ${c.border}`, background: c.bgEl, color: c.text,
+          fontFamily: "Inter", fontSize: 13, fontWeight: 700,
+          display: "flex", alignItems: "center", gap: 10,
+        }}>
+          <Mail size={15} color={c.turq} /> Copy this account's data
+        </button>
+        <a href={IG_URL} target="_blank" rel="noopener noreferrer" style={{
+          padding: "13px 16px", borderRadius: 13, textDecoration: "none",
+          border: `1px solid ${c.border}`, background: c.bgEl, color: c.text,
+          fontFamily: "Inter", fontSize: 13, fontWeight: 700,
+          display: "flex", alignItems: "center", gap: 10,
+        }}>
+          <Instagram size={15} color={c.turq} /> Open booking inbox
+        </a>
+      </div>
+
+      <Label c={c}>To Track All Users</Label>
+      <Card c={c}>
+        <div style={{ fontFamily: "Inter", fontSize: 12.5, color: c.muted, lineHeight: 1.7 }}>
+          Real user tracking needs three pieces added to the app:<br /><br />
+          <strong style={{ color: c.text }}>1. Accounts</strong> — email login so a person is the same person on every device.<br />
+          <strong style={{ color: c.text }}>2. A database</strong> — profiles and streaks saved to the cloud instead of the phone.<br />
+          <strong style={{ color: c.text }}>3. This screen, connected</strong> — a live list of every user, their plan, and their activity.<br /><br />
+          Until then, this page shows only the account on this device.
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 /* ═══════════════════════ NAV ═══════════════════════ */
 function Nav({ c, active, set }) {
   const tabs = [
     { id: "home", icon: Home, label: "Home" },
     { id: "train", icon: Dumbbell, label: "Train" },
+    { id: "rewards", icon: Gift, label: "Rewards" },
     { id: "sessions", icon: Instagram, label: "1:1" },
     { id: "track", icon: Droplet, label: "Track" },
     { id: "meals", icon: UtensilsCrossed, label: "Meals" },
@@ -3074,18 +3255,18 @@ function Nav({ c, active, set }) {
     <div style={{
       position: "absolute", bottom: 0, left: 0, right: 0, height: 74, background: c.bgEl,
       borderTop: `1px solid ${c.border}`, display: "flex", alignItems: "center",
-      justifyContent: "space-around", paddingBottom: 8, zIndex: 50,
+      justifyContent: "space-around", paddingBottom: 8, zIndex: 50, paddingInline: 2,
     }}>
       {tabs.map(t => {
         const on = active === t.id, I = t.icon;
         return (
           <button key={t.id} onClick={() => set(t.id)} style={{
             background: "none", border: "none", cursor: "pointer", display: "flex",
-            flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 2px",
+            flexDirection: "column", alignItems: "center", gap: 3, padding: "4px 1px", flex: 1, minWidth: 0,
             transform: on ? "translateY(-2px)" : "none", transition: "transform .18s",
           }}>
-            <I size={19} color={on ? c.turq : c.muted} />
-            <span style={{ fontFamily: "Inter", fontSize: 9.5, fontWeight: 800, color: on ? c.turq : c.muted }}>{t.label}</span>
+            <I size={18} color={on ? c.turq : c.muted} />
+            <span style={{ fontFamily: "Inter", fontSize: 8.5, fontWeight: 800, color: on ? c.turq : c.muted, whiteSpace: "nowrap" }}>{t.label}</span>
           </button>
         );
       })}
@@ -3129,7 +3310,7 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await storage.get("aac-state");
+        const res = await window.storage.get("aac-state");
         if (res?.value) {
           const s = JSON.parse(res.value);
           if (s.p) setP(prev => ({ ...prev, ...s.p }));
@@ -3155,7 +3336,7 @@ export default function App() {
     if (!loaded) return;
     const t = setTimeout(async () => {
       try {
-        await storage.set("aac-state", JSON.stringify({
+        await window.storage.set("aac-state", JSON.stringify({
           stage: stage === "app" ? "app" : "onboarding",
           p, custom, dark, water, cals, rewards, day: todayKey(),
         }));
@@ -3166,7 +3347,7 @@ export default function App() {
 
   /* ── Sign out: wipe saved data and return to onboarding ── */
   const signOut = async () => {
-    try { await storage.delete("aac-state"); } catch (e) { /* already gone */ }
+    try { await window.storage.delete("aac-state"); } catch (e) { /* already gone */ }
     setP({
       name: "", email: "", phone: "", age: "", gender: "male", heightFt: "", heightIn: "", weight: "",
       goalBodies: [], goalWeight: "", event: "", eventDate: "", daysPerWeek: 3,
@@ -3253,7 +3434,7 @@ export default function App() {
 
   return (
     <div style={{
-      width: "100%", maxWidth: 420, height: "min(800px, 100dvh)", margin: "0 auto", position: "relative",
+      width: "100%", maxWidth: 420, height: 800, margin: "0 auto", position: "relative",
       background: c.bg, borderRadius: 34, overflow: "hidden", border: `1px solid ${c.border}`,
       fontFamily: "Inter, sans-serif", boxShadow: "0 24px 70px rgba(0,0,0,.4)",
     }}>
@@ -3306,7 +3487,9 @@ export default function App() {
             {tab === "meals" && <MealsScreen c={c} tier={p.tier} onLog={logMeal} onUpgrade={() => setTab("profile")} />}
             {tab === "profile" && <ProfileScreen c={c} p={p} setP={setP} dark={dark} setDark={setDark}
               onCheckout={goCheckout} onSignOut={signOut} onProgress={onProgress} toast={toast}
-              onRewards={() => setTab("rewards")} rewards={rewards} />}
+              onRewards={() => setTab("rewards")} rewards={rewards} onAdmin={() => setTab("admin")} />}
+            {tab === "admin" && <AdminScreen c={c} p={p} water={water} cals={cals} rewards={rewards}
+              custom={custom} onBack={() => setTab("profile")} toast={toast} />}
             {tab === "checkout" && checkoutPlan && (
               <Checkout c={c} plan={checkoutPlan} email={p.email} onBack={() => setTab("profile")} onSuccess={paySuccess} />
             )}
@@ -3316,7 +3499,7 @@ export default function App() {
         )}
       </div>
 
-      {stage === "app" && tab !== "checkout" && <Nav c={c} active={tab} set={setTab} />}
+      {stage === "app" && tab !== "checkout" && tab !== "admin" && <Nav c={c} active={tab} set={setTab} />}
     </div>
   );
 }
