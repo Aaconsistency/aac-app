@@ -1064,7 +1064,7 @@ const Toast = ({ c, toast }) => !toast ? null : (
     background: c.bgEl2, border: `1px solid ${c.turq}`, borderRadius: 14, padding: "12px 18px",
     display: "flex", alignItems: "center", gap: 10, boxShadow: `0 8px 26px ${c.turqGlow}`,
     zIndex: 300, maxWidth: "88%", animation: "toastIn .25s ease",
-  }}>
+  }} className="aac-toast">
     <Sparkles size={16} color={c.turq} />
     <span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 700, color: c.text }}>{toast}</span>
   </div>
@@ -1501,7 +1501,7 @@ function SessionsScreen({ c, p }) {
   );
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>1:1 SESSIONS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18, lineHeight: 1.55 }}>
         The app handles the plan. For hands-on coaching, book an in-person session with the trainer.
@@ -1685,7 +1685,7 @@ function HomeScreen({ c, p, water, cals, badges, quests, rewards, onTrain, onSes
   const ring = 168, r = 74, circ = 2 * Math.PI * r;
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div>
           <div style={{ fontFamily: "Inter", fontSize: 12, color: c.muted, fontWeight: 700 }}>
@@ -1954,7 +1954,7 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
   }));
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>TRAIN</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18 }}>
         Built around your gear, your level, and what you're protecting.
@@ -2272,7 +2272,7 @@ function TrackScreen({ c, water, setWater, cals, setCals, toast }) {
   };
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 18 }}>TRACK</Disp>
 
       <Card c={c} style={{ marginBottom: 14 }}>
@@ -2352,7 +2352,7 @@ function MealsScreen({ c, tier, onUpgrade, onLog }) {
   if (open) {
     const r = open;
     return (
-      <div style={{ padding: "0 0 100px" }}>
+      <div style={{ padding: "0 0 120px" }}>
         <div style={{ height: 190, position: "relative" }}>
           {FoodArt[r.art]}
           <button onClick={() => setOpen(null)} style={{
@@ -2400,7 +2400,7 @@ function MealsScreen({ c, tier, onUpgrade, onLog }) {
   }
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>MEALS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 16 }}>Real food. Minimal effort. No sad chicken.</div>
 
@@ -2475,7 +2475,7 @@ function Checkout({ c, plan, email, onBack, onSuccess }) {
   };
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
         color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
         <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
@@ -2569,7 +2569,7 @@ function RewardsScreen({ c, p, rewards, setRewards, onBack, onClaim, toast }) {
   const totalEarned = rewards.list.reduce((s, r) => s + r.earned, 0);
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>MY REWARDS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18, lineHeight: 1.55 }}>
         Pick a treat, pick the streak that earns it. Totally optional — turn it on or off whenever you want.
@@ -2741,11 +2741,10 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
   const PLANS = [
     { id: "free", name: "Free", price: "$0", f: ["Basic workouts", "Streaks & badges"] },
     { id: "premium", name: "Premium", price: "$9.99/mo", priceId: "price_premium_monthly", f: ["Full adaptive programming", "Meal prep plans", "Streak freezes", "No ads"] },
-    { id: "elite", name: "Elite", price: "$19.99/mo", priceId: "price_elite_monthly", f: ["Everything in Premium", "Advanced analytics", "Priority program drops"] },
   ];
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <Disp c={c} size={30}>PROFILE</Disp>
         <button onClick={() => setEdit(true)} style={{
@@ -2861,7 +2860,7 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
             <Card key={pl.id} c={c} style={{ padding: 15, border: `1.5px solid ${cur ? c.turq : c.border}` }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                  {pl.id === "elite" && <Crown size={14} color={c.gold} />}
+                  {pl.id === "premium" && <Crown size={14} color={c.gold} />}
                   <span style={{ fontFamily: "Inter", fontWeight: 800, fontSize: 15, color: c.text }}>{pl.name}</span>
                 </div>
                 <span style={{ fontFamily: "'JetBrains Mono'", fontSize: 13, color: c.red, fontWeight: 700 }}>{pl.price}</span>
@@ -2940,7 +2939,7 @@ function ProfileEditor({ c, p, onSave, onCancel }) {
   const ok = d.name.trim() && d.email.includes("@") && d.age && d.heightFt && d.weight && d.goalBodies.length > 0;
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <Disp c={c} size={30}>EDIT PROFILE</Disp>
         <button onClick={onCancel} style={{
@@ -3115,7 +3114,7 @@ function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
   }, [ok]);
 
   if (!ok) return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
         color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
         <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
@@ -3156,7 +3155,7 @@ function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
   };
 
   return (
-    <div style={{ padding: "18px 18px 100px" }}>
+    <div style={{ padding: "18px 18px 120px" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
         color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
         <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
@@ -3256,7 +3255,7 @@ function Nav({ c, active, set }) {
       position: "absolute", bottom: 0, left: 0, right: 0, height: 74, background: c.bgEl,
       borderTop: `1px solid ${c.border}`, display: "flex", alignItems: "center",
       justifyContent: "space-around", paddingBottom: 8, zIndex: 50, paddingInline: 2,
-    }}>
+    }} className="aac-nav">
       {tabs.map(t => {
         const on = active === t.id, I = t.icon;
         return (
@@ -3434,14 +3433,34 @@ export default function App() {
 
   return (
     <div style={{
-      width: "100%", maxWidth: 420, height: 800, margin: "0 auto", position: "relative",
-      background: c.bg, borderRadius: 34, overflow: "hidden", border: `1px solid ${c.border}`,
-      fontFamily: "Inter, sans-serif", boxShadow: "0 24px 70px rgba(0,0,0,.4)",
-    }}>
+      width: "100%", maxWidth: 420, margin: "0 auto", position: "relative",
+      height: "100dvh", background: c.bg, overflow: "hidden",
+      fontFamily: "Inter, sans-serif",
+    }} className="aac-frame">
       <style>{`
         ${FONTS}
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { display: none; }
+        html, body { margin: 0; padding: 0; background: ${c.bg}; overscroll-behavior: none; }
+        /* Phones: fill the screen, respect the notch and home indicator */
+        .aac-scroll {
+          height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+          padding-top: env(safe-area-inset-top, 0px);
+        }
+        .aac-nav {
+          padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+          height: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        .aac-toast { top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
+        /* Desktop / tablet: show it as a phone-shaped frame again */
+        @media (min-width: 480px) and (min-height: 700px) {
+          body { display: flex; justify-content: center; align-items: center; min-height: 100dvh; }
+          .aac-frame {
+            height: min(860px, calc(100dvh - 24px)) !important;
+            border-radius: 34px; border: 1px solid ${c.border};
+            box-shadow: 0 24px 70px rgba(0,0,0,.4);
+          }
+        }
         @keyframes toastIn { from { opacity:0; transform: translate(-50%,-8px) } to { opacity:1; transform: translate(-50%,0) } }
         @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
         @keyframes popIn { from { opacity:0; transform: scale(.85) } to { opacity:1; transform: scale(1) } }
@@ -3460,7 +3479,7 @@ export default function App() {
       <Confetti c={c} fire={confetti} key={confetti} />
       <LevelUp c={c} data={modal} gender={p.gender} onClose={() => setModal(null)} />
 
-      <div style={{ height: "100%", overflowY: "auto" }}>
+      <div className="aac-scroll">
         {!loaded ? (
           <div style={{ height: "100%", display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center", gap: 16 }}>
