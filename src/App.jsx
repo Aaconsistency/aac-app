@@ -2,8 +2,8 @@ import React, { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import {
   Flame, Droplet, Dumbbell, Home, UtensilsCrossed, ChevronRight, Check,
   Plus, Minus, Lock, Sun, Moon, User, ShieldAlert, Sparkles, X, Zap,
-  Crown, Calendar, Snowflake, ArrowLeft, Shield, Gift, Medal, Mail, MailCheck,
-  Pencil, RotateCcw, Trash2, Instagram, ExternalLink, MapPin, MessageSquare, LogOut
+  Crown, Calendar, Snowflake, ArrowLeft, Shield, Gift, Medal, Mail,
+  Pencil, RotateCcw, Trash2, Instagram, ExternalLink, MessageSquare, LogOut
 } from "lucide-react";
 
 /* ═══════════════════════ DESIGN TOKENS ═══════════════════════ */
@@ -1388,99 +1388,10 @@ function Onboarding({ c, onDone }) {
       {step === 7 && (
         <StepShell c={c} n={7} total={TOTAL_STEPS} title="ANYTHING TO PROTECT?"
           sub="Tap the muscles or joints giving you trouble. We'll swap any exercise that stresses them."
-          label="Create Account" onNext={() => onDone(f)} onBack={back}>
+          label="Start Training" onNext={() => onDone(f)} onBack={back}>
           <AnatomyPicker c={c} selected={f.injuries} onToggle={(id) => toggleArr("injuries", id)} />
         </StepShell>
       )}
-    </div>
-  );
-}
-
-/* ═══════════════════════ EMAIL CONFIRMATION ═══════════════════════ */
-function ConfirmEmail({ c, profile, onConfirm }) {
-  const [sent, setSent] = useState(false);
-  const [confirming, setConfirming] = useState(false);
-  const coach = COACHES[profile.gender === "female" ? "female" : "male"];
-
-  return (
-    <div style={{ padding: "24px 20px", minHeight: "100%", display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 18 }}>
-        <Mail size={17} color={c.turq} />
-        <span style={{ fontFamily: "Inter", fontSize: 12.5, fontWeight: 700, color: c.muted }}>
-          Sent to {profile.email}
-        </span>
-      </div>
-
-      <div style={{
-        background: "#FFFFFF", borderRadius: 16, overflow: "hidden",
-        border: `1px solid ${c.border}`, boxShadow: "0 10px 34px rgba(0,0,0,.22)", marginBottom: 20,
-      }}>
-        <div style={{
-          background: `linear-gradient(135deg,#0A090C 0%,#1A1620 60%,#0E2E2B 100%)`,
-          padding: "26px 22px 22px", textAlign: "center", position: "relative", overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", top: -40, right: -30, width: 130, height: 130, borderRadius: "50%",
-            background: "radial-gradient(circle,rgba(46,217,195,.22),transparent 70%)",
-          }} />
-          <div style={{
-            width: 44, height: 44, borderRadius: 13, margin: "0 auto 12px",
-            background: "linear-gradient(135deg,#F0202F,#2ED9C3)", display: "flex",
-            alignItems: "center", justifyContent: "center",
-          }}>
-            <span style={{ fontFamily: "'Bebas Neue'", color: "#fff", fontSize: 18, letterSpacing: 1.2 }}>AAC</span>
-          </div>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 24, color: "#fff", letterSpacing: 1.5, lineHeight: 1 }}>
-            ALL ABOUT CONSISTENCY
-          </div>
-          <div style={{ fontFamily: "Inter", fontSize: 9.5, color: "#2ED9C3", fontWeight: 800,
-            letterSpacing: 2.2, marginTop: 7 }}>
-            ACCOUNT CONFIRMATION
-          </div>
-        </div>
-
-        <div style={{ padding: "26px 24px 28px", textAlign: "center" }}>
-          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 27, color: "#141216", letterSpacing: .5, lineHeight: 1.05 }}>
-            CONGRATULATIONS ON YOUR<br />FITNESS JOURNEY
-          </div>
-          <div style={{ width: 42, height: 3, borderRadius: 2, margin: "14px auto",
-            background: "linear-gradient(90deg,#F0202F,#2ED9C3)" }} />
-          <div style={{ fontFamily: "Inter", fontSize: 13.5, color: "#4A464E", lineHeight: 1.65, marginBottom: 22 }}>
-            {profile.name ? `${profile.name}, your` : "Your"} account is ready and {coach.name} is standing by.
-            Confirm your email to unlock your plan, your streak, and everything you build from here.
-          </div>
-
-          <button onClick={() => { setConfirming(true); setTimeout(onConfirm, 900); }} disabled={confirming} style={{
-            padding: "15px 30px", borderRadius: 12, border: "none", cursor: confirming ? "default" : "pointer",
-            background: confirming ? "#8A8890" : "linear-gradient(135deg,#F0202F,#C4101C)",
-            color: "#fff", fontFamily: "Inter", fontWeight: 800, fontSize: 14.5,
-            boxShadow: confirming ? "none" : "0 6px 20px rgba(240,32,47,.34)",
-            display: "inline-flex", alignItems: "center", gap: 9, transition: "all .2s",
-          }}>
-            {confirming ? "Confirming…" : <>Confirm My Email <MailCheck size={17} /></>}
-          </button>
-
-          <div style={{ fontFamily: "Inter", fontSize: 11, color: "#8A8690", marginTop: 20, lineHeight: 1.6 }}>
-            This link expires in 24 hours.<br />
-            Didn't create this account? You can safely ignore this email.
-          </div>
-        </div>
-
-        <div style={{ background: "#F4F1EC", padding: "15px 22px", textAlign: "center", borderTop: "1px solid #E4DFD7" }}>
-          <div style={{ fontFamily: "Inter", fontSize: 10, color: "#8A8690", lineHeight: 1.7 }}>
-            All About Consistency · Dedication over comfort<br />
-            Manage preferences · Unsubscribe · Privacy
-          </div>
-        </div>
-      </div>
-
-      <button onClick={() => setSent(true)} disabled={sent} style={{
-        background: "none", border: "none", cursor: sent ? "default" : "pointer",
-        fontFamily: "Inter", fontSize: 12.5, fontWeight: 700,
-        color: sent ? c.turq : c.muted, padding: 8, marginTop: "auto",
-      }}>
-        {sent ? "Confirmation resent ✓" : "Didn't get it? Resend email"}
-      </button>
     </div>
   );
 }
@@ -2539,7 +2450,7 @@ const REWARD_PRESETS = [
   { days: 14, treat: "New workout gear" },
 ];
 
-function RewardsScreen({ c, p, rewards, setRewards, onBack, onClaim, toast }) {
+function RewardsScreen({ c, p, rewards, setRewards, onClaim, toast }) {
   const streak = p.streak;
   const [days, setDays] = useState(3);
   const [treat, setTreat] = useState("");
@@ -2740,7 +2651,7 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
 
   const PLANS = [
     { id: "free", name: "Free", price: "$0", f: ["Basic workouts", "Streaks & badges"] },
-    { id: "premium", name: "Premium", price: "$9.99/mo", priceId: "price_premium_monthly", f: ["Full adaptive programming", "Meal prep plans", "Streak freezes", "No ads"] },
+    { id: "premium", name: "Premium", price: "$9.99/mo", priceId: "price_premium_monthly", f: ["Personalized guidance from Dr. Smith", "Priority DM access for form checks", "Full adaptive programming", "Weekly meal prep plans"] },
   ];
 
   return (
@@ -2827,7 +2738,7 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
       <Card c={c} style={{ marginBottom: 14 }}>
         <Label c={c}>Your Numbers</Label>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {[["Age", p.age], ["Height", `${p.heightFt}'${p.heightIn || 0}"`], ["Weight", `${p.weight} lbs`],
+          {[["Age", p.age || "—"], ["Height", p.heightFt ? `${p.heightFt}'${p.heightIn || 0}"` : "—"], ["Weight", p.weight ? `${p.weight} lbs` : "—"],
             ["Goal Weight", p.goalWeight ? `${p.goalWeight} lbs` : "—"], ["Phone", p.phone || "—"],
             ["Days / week", p.daysPerWeek]].map(([k, v]) => (
             <div key={k} style={{ display: "flex", justifyContent: "space-between" }}>
@@ -2886,24 +2797,6 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
         })}
       </div>
 
-      <Label c={c}>Program Packs</Label>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {[{ name: "6-Week Marathon Prep", price: "$9.99", priceId: "price_marathon" },
-          { name: "High-Protein Recipe Pack", price: "$4.99", priceId: "price_recipes" },
-          { name: "Mobility & Joint Rescue", price: "$6.99", priceId: "price_mobility" }].map(pk => (
-          <Card key={pk.name} c={c} style={{ padding: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <Gift size={16} color={c.turq} />
-              <span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 700, color: c.text }}>{pk.name}</span>
-            </div>
-            <button onClick={() => onCheckout({ ...pk, id: "pack" })} style={{
-              padding: "7px 13px", borderRadius: 9, border: `1px solid ${c.turq}`, background: "transparent",
-              color: c.turq, fontFamily: "Inter", fontWeight: 800, fontSize: 12, cursor: "pointer", flexShrink: 0,
-            }}>{pk.price}</button>
-          </Card>
-        ))}
-      </div>
-
       <button onClick={onAdmin} style={{
         width: "100%", marginTop: 18, padding: "13px 16px", borderRadius: 13, cursor: "pointer",
         border: `1px solid ${c.border}`, background: "transparent", color: c.muted,
@@ -2936,7 +2829,9 @@ function ProfileEditor({ c, p, onSave, onCancel }) {
     if (dg.length > 3) return `(${dg.slice(0, 3)}) ${dg.slice(3)}`;
     return dg;
   };
-  const ok = d.name.trim() && d.email.includes("@") && d.age && d.heightFt && d.weight && d.goalBodies.length > 0;
+  // Quick-start users skip the personal fields, so only goals are required here.
+  // Email is validated only when they actually typed one.
+  const ok = d.goalBodies.length > 0 && (!d.email || d.email.includes("@"));
 
   return (
     <div style={{ padding: "18px 18px 120px" }}>
@@ -3415,14 +3310,18 @@ export default function App() {
     ];
   }, [p.lastDone, water, cals]);
 
-  const finishOnboard = (f) => { setP(prev => ({ ...prev, ...f })); setStage("confirm"); };
-  const emailConfirmed = () => { setStage("app"); celebrate(); toast(`Welcome, ${p.name}. Your plan is live 🔥`); };
+  const finishOnboard = (f) => {
+    setP(prev => ({ ...prev, ...f }));
+    setStage("app");
+    celebrate();
+    toast(f.name ? `Welcome, ${f.name}. Your plan is live 🔥` : "Plan locked in. Let's train 🔥");
+  };
 
   const goCheckout = (plan) => { setCheckoutPlan(plan); setTab("checkout"); };
   const paySuccess = (plan) => {
-    if (plan.id !== "pack") setP(x => ({ ...x, tier: plan.id, freezes: x.freezes + 3 }));
+    setP(x => ({ ...x, tier: plan.id, freezes: x.freezes + 3 }));
     setCheckoutPlan(null); setTab("profile"); celebrate();
-    toast(plan.id === "pack" ? `${plan.name} unlocked 🎁` : `${plan.name} active — trial started`);
+    toast(`${plan.name} active — trial started`);
   };
 
   const logMeal = (r) => {
@@ -3441,24 +3340,39 @@ export default function App() {
         ${FONTS}
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { display: none; }
-        html, body { margin: 0; padding: 0; background: ${c.bg}; overscroll-behavior: none; }
-        /* Phones: fill the screen, respect the notch and home indicator */
+        /* Lock the page so the app owns the whole screen, like a native app */
+        html, body {
+          margin: 0; padding: 0; height: 100%;
+          background: ${c.bg}; overscroll-behavior: none;
+        }
+        body { overflow: hidden; }
+        /* Phones: edge to edge, no gaps, notch and home indicator respected */
+        .aac-frame {
+          position: fixed !important; inset: 0 !important;
+          width: 100% !important; max-width: none !important; height: 100% !important;
+          margin: 0 !important; border-radius: 0 !important; border: none !important;
+          box-shadow: none !important;
+        }
         .aac-scroll {
           height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
           padding-top: env(safe-area-inset-top, 0px);
         }
         .aac-nav {
-          padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
-          height: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+          height: auto !important;
+          padding-top: 9px !important;
+          padding-bottom: calc(9px + env(safe-area-inset-bottom, 0px)) !important;
         }
         .aac-toast { top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
         /* Desktop / tablet: show it as a phone-shaped frame again */
+        /* Desktop / tablet: restore the centred phone-shaped frame */
         @media (min-width: 480px) and (min-height: 700px) {
-          body { display: flex; justify-content: center; align-items: center; min-height: 100dvh; }
+          body { overflow: auto; display: flex; justify-content: center; align-items: center; }
           .aac-frame {
+            position: relative !important; inset: auto !important;
+            max-width: 420px !important; margin: 0 auto !important;
             height: min(860px, calc(100dvh - 24px)) !important;
-            border-radius: 34px; border: 1px solid ${c.border};
-            box-shadow: 0 24px 70px rgba(0,0,0,.4);
+            border-radius: 34px !important; border: 1px solid ${c.border} !important;
+            box-shadow: 0 24px 70px rgba(0,0,0,.4) !important;
           }
         }
         @keyframes toastIn { from { opacity:0; transform: translate(-50%,-8px) } to { opacity:1; transform: translate(-50%,0) } }
@@ -3491,14 +3405,13 @@ export default function App() {
         ) : (
           <>
             {stage === "onboarding" && <Onboarding c={c} onDone={finishOnboard} />}
-        {stage === "confirm" && <ConfirmEmail c={c} profile={p} onConfirm={emailConfirmed} />}
         {stage === "app" && (
           <>
             {tab === "home" && <HomeScreen c={c} p={p} water={water} cals={cals} badges={badges}
               quests={quests} rewards={rewards} onTrain={() => setTab("train")}
               onSessions={() => setTab("sessions")} onRewards={() => setTab("rewards")} />}
             {tab === "rewards" && <RewardsScreen c={c} p={p} rewards={rewards} setRewards={setRewards}
-              onBack={() => setTab("home")} onClaim={onRewardClaim} toast={toast} />}
+              onClaim={onRewardClaim} toast={toast} />}
             {tab === "train" && <TrainScreen c={c} p={p} setP={setP} toast={toast} celebrate={celebrate}
               custom={custom} setCustom={setCustom} />}
             {tab === "sessions" && <SessionsScreen c={c} p={p} />}
