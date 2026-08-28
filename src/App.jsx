@@ -30,6 +30,8 @@ const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&
 
 const IG_URL = "https://www.instagram.com/aac_allaboutconsistency?utm_source=qr";
 const IG_HANDLE = "@aac_allaboutconsistency";
+/* Live Stripe payment link for Premium. Replace here if the price ever changes. */
+const STRIPE_PREMIUM_LINK = "https://buy.stripe.com/bJe00ld7T3nS2cJgFA6Zy00";
 
 /* ═══════════════════════ AAC WORDMARK ═══════════════════════ */
 function Logo({ c, size = 62, radius = 18, fontSize }) {
@@ -47,27 +49,6 @@ function Logo({ c, size = 62, radius = 18, fontSize }) {
       }}>AAC</span>
     </div>
   );
-}
-
-/* ═══════════════════════ PAYMENT CONFIG ═══════════════════════ */
-const PAYMENT_CONFIG = {
-  stripePublishableKey: "pk_test_REPLACE_ME",
-  checkoutEndpoint: "/api/create-checkout-session",
-  liveMode: false,
-};
-
-async function processPayment({ plan, card }) {
-  if (PAYMENT_CONFIG.liveMode) {
-    const res = await fetch(PAYMENT_CONFIG.checkoutEndpoint, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId: plan.priceId, email: card.email }),
-    });
-    if (!res.ok) throw new Error("Payment failed. Check your card details and try again.");
-    return res.json();
-  }
-  await new Promise((r) => setTimeout(r, 1500));
-  if (card.number.replace(/\s/g, "").endsWith("0000")) throw new Error("Card declined. Try a different card.");
-  return { ok: true, demo: true, subscriptionId: "sub_demo_" + Date.now() };
 }
 
 /* ═══════════════════════ DATA ═══════════════════════ */
@@ -409,185 +390,8 @@ const todayKey = () => new Date().toDateString();
 const yesterdayKey = () => { const d = new Date(); d.setDate(d.getDate() - 1); return d.toDateString(); };
 const daysUntil = (s) => s ? Math.max(0, Math.ceil((new Date(s) - new Date()) / 86400000)) : null;
 
-/* ═══════════════════════ EXERCISE DEMO ═══════════════════════ */
-const POSES = {
-  squat: {
-    a: { head: [50, 15], neck: [50, 25], hip: [50, 58], knee: [51, 84], ankle: [50, 110], elbow: [42, 44], hand: [40, 60] },
-    b: { head: [44, 30], neck: [45, 40], hip: [42, 70], knee: [58, 85], ankle: [50, 110], elbow: [44, 56], hand: [52, 66] },
-  },
-  hinge: {
-    a: { head: [50, 15], neck: [50, 25], hip: [50, 58], knee: [50, 84], ankle: [50, 110], elbow: [48, 44], hand: [48, 62] },
-    b: { head: [26, 40], neck: [32, 44], hip: [52, 58], knee: [54, 84], ankle: [50, 110], elbow: [32, 62], hand: [32, 78] },
-  },
-  push: {
-    a: { head: [76, 52], neck: [68, 56], hip: [40, 68], knee: [26, 76], ankle: [14, 82], elbow: [68, 74], hand: [66, 92] },
-    b: { head: [76, 66], neck: [68, 70], hip: [40, 78], knee: [26, 84], ankle: [14, 88], elbow: [78, 80], hand: [66, 92] },
-  },
-  press: {
-    a: { head: [50, 18], neck: [50, 28], hip: [50, 62], knee: [50, 86], ankle: [50, 110], elbow: [36, 34], hand: [40, 22] },
-    b: { head: [50, 18], neck: [50, 28], hip: [50, 62], knee: [50, 86], ankle: [50, 110], elbow: [44, 16], hand: [48, 2] },
-  },
-  pull: {
-    a: { head: [30, 34], neck: [37, 38], hip: [58, 52], knee: [58, 82], ankle: [54, 110], elbow: [34, 60], hand: [33, 80] },
-    b: { head: [30, 34], neck: [37, 38], hip: [58, 52], knee: [58, 82], ankle: [54, 110], elbow: [46, 54], hand: [44, 44] },
-  },
-  plank: {
-    a: { head: [78, 56], neck: [70, 59], hip: [40, 68], knee: [26, 74], ankle: [12, 80], elbow: [70, 78], hand: [78, 82] },
-    b: { head: [78, 58], neck: [70, 61], hip: [40, 71], knee: [26, 76], ankle: [12, 82], elbow: [70, 80], hand: [78, 84] },
-  },
-  core: {
-    a: { head: [72, 70], neck: [64, 70], hip: [38, 74], knee: [24, 62], ankle: [14, 78], elbow: [64, 58], hand: [70, 50] },
-    b: { head: [64, 58], neck: [58, 62], hip: [38, 74], knee: [30, 56], ankle: [22, 72], elbow: [56, 54], hand: [50, 50] },
-  },
-  rotation: {
-    a: { head: [50, 18], neck: [50, 28], hip: [50, 62], knee: [48, 86], ankle: [48, 110], elbow: [58, 44], hand: [68, 46] },
-    b: { head: [50, 18], neck: [50, 28], hip: [50, 62], knee: [52, 86], ankle: [52, 110], elbow: [40, 44], hand: [28, 42] },
-  },
-  cardio: {
-    a: { head: [52, 14], neck: [52, 24], hip: [50, 56], knee: [62, 76], ankle: [66, 98], elbow: [38, 40], hand: [34, 54] },
-    b: { head: [52, 14], neck: [52, 24], hip: [50, 56], knee: [36, 78], ankle: [26, 96], elbow: [64, 40], hand: [70, 52] },
-  },
-  power: {
-    a: { head: [48, 32], neck: [48, 42], hip: [46, 70], knee: [58, 86], ankle: [50, 110], elbow: [34, 58], hand: [30, 74] },
-    b: { head: [50, 8], neck: [50, 18], hip: [50, 48], knee: [52, 72], ankle: [52, 96], elbow: [56, 22], hand: [60, 8] },
-  },
-  mobility: {
-    a: { head: [50, 16], neck: [50, 26], hip: [50, 60], knee: [50, 86], ankle: [50, 110], elbow: [36, 38], hand: [30, 26] },
-    b: { head: [54, 18], neck: [52, 28], hip: [50, 60], knee: [50, 86], ankle: [50, 110], elbow: [66, 38], hand: [72, 26] },
-  },
-  /* Standing, hands on wall, leaning in and out */
-  wallpush: {
-    a: { head: [52, 16], neck: [52, 26], hip: [48, 62], knee: [49, 87], ankle: [48, 112], elbow: [64, 34], hand: [78, 40] },
-    b: { head: [60, 22], neck: [59, 31], hip: [50, 64], knee: [50, 88], ankle: [48, 112], elbow: [68, 42], hand: [78, 40] },
-  },
-  /* Lying on back, pressing the bar up off the chest */
-  bench: {
-    a: { head: [18, 88], neck: [26, 88], hip: [54, 90], knee: [68, 76], ankle: [74, 96], elbow: [34, 78], hand: [30, 68] },
-    b: { head: [18, 88], neck: [26, 88], hip: [54, 90], knee: [68, 76], ankle: [74, 96], elbow: [28, 64], hand: [28, 50] },
-  },
-  /* Seated machine/incline press, pressing forward */
-  seatedpress: {
-    a: { head: [38, 26], neck: [38, 36], hip: [40, 70], knee: [60, 72], ankle: [60, 102], elbow: [46, 46], hand: [44, 42] },
-    b: { head: [38, 26], neck: [38, 36], hip: [40, 70], knee: [60, 72], ankle: [60, 102], elbow: [56, 44], hand: [72, 42] },
-  },
-  /* Standing isometric squeeze, hands pressed together with a small pulse */
-  squeeze: {
-    a: { head: [48, 16], neck: [48, 26], hip: [48, 62], knee: [48, 88], ankle: [48, 112], elbow: [58, 42], hand: [62, 40] },
-    b: { head: [48, 16], neck: [48, 26], hip: [48, 62], knee: [48, 88], ankle: [48, 112], elbow: [56, 42], hand: [58, 40] },
-  },
-  /* Pallof / anti-rotation: press straight out from the chest */
-  pressout: {
-    a: { head: [46, 16], neck: [46, 26], hip: [46, 62], knee: [47, 88], ankle: [46, 112], elbow: [54, 40], hand: [52, 36] },
-    b: { head: [46, 16], neck: [46, 26], hip: [46, 62], knee: [47, 88], ankle: [46, 112], elbow: [62, 40], hand: [78, 38] },
-  },
-  /* Seated trunk rotation, hands sweep side to side */
-  seatedrot: {
-    a: { head: [44, 26], neck: [44, 36], hip: [46, 70], knee: [64, 72], ankle: [64, 102], elbow: [56, 48], hand: [66, 50] },
-    b: { head: [42, 26], neck: [43, 36], hip: [46, 70], knee: [64, 72], ankle: [64, 102], elbow: [32, 48], hand: [22, 50] },
-  },
-  /* Hanging pull-up: hands stay on the bar, body rises */
-  pullup: {
-    a: { head: [50, 36], neck: [50, 46], hip: [50, 76], knee: [53, 95], ankle: [51, 112], elbow: [55, 26], hand: [57, 12] },
-    b: { head: [50, 24], neck: [50, 34], hip: [50, 64], knee: [57, 82], ankle: [53, 98], elbow: [62, 22], hand: [57, 12] },
-  },
-  /* Seated lat pulldown: bar pulled from overhead to the chest */
-  pulldown: {
-    a: { head: [44, 26], neck: [44, 36], hip: [46, 72], knee: [64, 74], ankle: [64, 104], elbow: [52, 20], hand: [56, 8] },
-    b: { head: [44, 28], neck: [44, 38], hip: [46, 72], knee: [64, 74], ankle: [64, 104], elbow: [54, 42], hand: [58, 32] },
-  },
-  /* Seated row / rowing machine: reach forward, drive back and pull */
-  rowmachine: {
-    a: { head: [40, 34], neck: [41, 44], hip: [46, 80], knee: [62, 70], ankle: [76, 82], elbow: [52, 58], hand: [62, 60] },
-    b: { head: [30, 30], neck: [33, 40], hip: [46, 80], knee: [66, 74], ankle: [80, 82], elbow: [36, 56], hand: [42, 58] },
-  },
-  /* Renegade row: plank position, one hand rows up */
-  renegade: {
-    a: { head: [78, 56], neck: [70, 59], hip: [40, 68], knee: [26, 74], ankle: [12, 80], elbow: [70, 78], hand: [72, 92] },
-    b: { head: [78, 54], neck: [70, 57], hip: [40, 66], knee: [26, 73], ankle: [12, 80], elbow: [64, 64], hand: [60, 70] },
-  },
-  /* Glute bridge / hip thrust: lying, hips drive up */
-  bridge: {
-    a: { head: [16, 100], neck: [24, 101], hip: [50, 104], knee: [66, 88], ankle: [72, 108], elbow: [30, 106], hand: [38, 108] },
-    b: { head: [16, 100], neck: [24, 100], hip: [52, 82], knee: [66, 82], ankle: [72, 108], elbow: [30, 106], hand: [38, 108] },
-  },
-  /* Pelvic tilt: lying supine, small controlled hip motion */
-  supine: {
-    a: { head: [16, 102], neck: [24, 102], hip: [50, 105], knee: [66, 90], ankle: [72, 108], elbow: [30, 107], hand: [38, 109] },
-    b: { head: [16, 102], neck: [24, 102], hip: [50, 100], knee: [66, 88], ankle: [72, 108], elbow: [30, 107], hand: [38, 109] },
-  },
-  /* Dead bug: lying, opposite arm and leg extend away */
-  deadbug: {
-    a: { head: [16, 100], neck: [24, 100], hip: [48, 102], knee: [56, 84], ankle: [54, 68], elbow: [28, 86], hand: [28, 70] },
-    b: { head: [16, 100], neck: [24, 100], hip: [48, 102], knee: [64, 90], ankle: [80, 86], elbow: [16, 90], hand: [6, 80] },
-  },
-  /* Bird dog: all fours, opposite arm and leg reach out */
-  birddog: {
-    a: { head: [78, 58], neck: [70, 61], hip: [42, 64], knee: [38, 84], ankle: [24, 88], elbow: [70, 76], hand: [72, 90] },
-    b: { head: [80, 54], neck: [72, 57], hip: [42, 62], knee: [34, 68], ankle: [16, 60], elbow: [80, 58], hand: [94, 52] },
-  },
-  /* Standing march: knee drives up, opposite arm swings */
-  march: {
-    a: { head: [50, 14], neck: [50, 24], hip: [50, 58], knee: [53, 84], ankle: [51, 110], elbow: [44, 42], hand: [42, 56] },
-    b: { head: [50, 14], neck: [50, 24], hip: [50, 58], knee: [62, 64], ankle: [58, 84], elbow: [57, 40], hand: [60, 52] },
-  },
-  /* Wall sit: seated hold against the wall, near-static */
-  wallsit: {
-    a: { head: [46, 34], neck: [46, 44], hip: [46, 76], knee: [66, 78], ankle: [66, 108], elbow: [42, 58], hand: [42, 72] },
-    b: { head: [46, 35], neck: [46, 45], hip: [46, 77], knee: [66, 78], ankle: [66, 108], elbow: [42, 59], hand: [42, 73] },
-  },
-  /* Step-up: drive up onto the box */
-  stepup: {
-    a: { head: [44, 20], neck: [44, 30], hip: [44, 64], knee: [47, 89], ankle: [45, 112], elbow: [38, 46], hand: [36, 60] },
-    b: { head: [54, 12], neck: [54, 22], hip: [54, 56], knee: [66, 74], ankle: [64, 94], elbow: [48, 38], hand: [50, 50] },
-  },
-  /* Seated leg/knee extension: shin swings out until straight */
-  seatedext: {
-    a: { head: [42, 28], neck: [42, 38], hip: [44, 72], knee: [62, 74], ankle: [60, 102], elbow: [38, 52], hand: [40, 66] },
-    b: { head: [42, 28], neck: [42, 38], hip: [44, 72], knee: [62, 74], ankle: [88, 70], elbow: [38, 52], hand: [40, 66] },
-  },
-  /* Leg press: reclined seat, legs press away */
-  legpress: {
-    a: { head: [22, 50], neck: [28, 56], hip: [42, 80], knee: [56, 62], ankle: [60, 78], elbow: [34, 70], hand: [42, 78] },
-    b: { head: [22, 50], neck: [28, 56], hip: [42, 80], knee: [64, 56], ankle: [84, 50], elbow: [34, 70], hand: [42, 78] },
-  },
-  /* Split squat / lunge: staggered stance, drop straight down */
-  lunge: {
-    a: { head: [50, 16], neck: [50, 26], hip: [50, 60], knee: [62, 82], ankle: [62, 110], elbow: [44, 44], hand: [42, 58] },
-    b: { head: [50, 28], neck: [50, 38], hip: [50, 72], knee: [66, 88], ankle: [62, 110], elbow: [44, 54], hand: [44, 66] },
-  },
-  /* Med ball slam: ball from overhead down through the floor */
-  slam: {
-    a: { head: [48, 12], neck: [48, 22], hip: [50, 58], knee: [52, 84], ankle: [50, 110], elbow: [56, 14], hand: [58, 2] },
-    b: { head: [38, 34], neck: [40, 43], hip: [52, 62], knee: [55, 86], ankle: [50, 110], elbow: [40, 58], hand: [36, 74] },
-  },
-  /* Jump rope: light bounce, hands turning at the sides */
-  jumprope: {
-    a: { head: [50, 16], neck: [50, 26], hip: [50, 60], knee: [52, 86], ankle: [50, 112], elbow: [60, 50], hand: [66, 58] },
-    b: { head: [50, 10], neck: [50, 20], hip: [50, 54], knee: [53, 79], ankle: [50, 103], elbow: [62, 46], hand: [68, 54] },
-  },
-  /* Stationary bike: seated, legs turning the pedals */
-  bike: {
-    a: { head: [34, 32], neck: [36, 42], hip: [44, 74], knee: [62, 66], ankle: [70, 84], elbow: [46, 54], hand: [58, 58] },
-    b: { head: [34, 32], neck: [36, 42], hip: [44, 74], knee: [58, 82], ankle: [62, 100], elbow: [46, 54], hand: [58, 58] },
-  },
-  /* Seated arm cycle: seated, arms turning the crank */
-  armcycle: {
-    a: { head: [40, 30], neck: [40, 40], hip: [44, 74], knee: [62, 76], ankle: [62, 104], elbow: [52, 50], hand: [62, 44] },
-    b: { head: [40, 30], neck: [40, 40], hip: [44, 74], knee: [62, 76], ankle: [62, 104], elbow: [50, 58], hand: [58, 66] },
-  },
-  /* Prowler / sled push: leaning into the sled, legs driving */
-  prowler: {
-    a: { head: [70, 34], neck: [64, 40], hip: [44, 62], knee: [52, 86], ankle: [42, 110], elbow: [76, 48], hand: [86, 56] },
-    b: { head: [70, 34], neck: [64, 40], hip: [46, 62], knee: [38, 84], ankle: [54, 108], elbow: [76, 48], hand: [86, 56] },
-  },
-  /* Foam rolling: body over the roller, slow shift along it */
-  foamroll: {
-    a: { head: [76, 72], neck: [68, 74], hip: [42, 84], knee: [30, 90], ankle: [18, 96], elbow: [72, 88], hand: [76, 98] },
-    b: { head: [72, 72], neck: [64, 74], hip: [38, 84], knee: [26, 90], ankle: [14, 96], elbow: [68, 88], hand: [72, 98] },
-  },
-};
-
-/* Maps each exercise name to its accurate movement pose.
+/* ═══════════════════════ EXERCISE MATCHING ═══════════════════════ */
+/* Classifies an exercise so the right written cue is shown.
    Specific matches are checked BEFORE generic ones — order matters. */
 function patternFor(name = "") {
   const n = name.toLowerCase();
@@ -744,62 +548,6 @@ function explainFor(name = "") {
   const n = name.toLowerCase();
   for (const [re, t] of EXPLAIN) if (re.test(n)) return t;
   return PATTERN_EXPLAIN[patternFor(name)] || PATTERN_EXPLAIN.core;
-}
-
-function ExerciseDemo({ c, name, size = 84, playing = true }) {
-  const [t, setT] = useState(0);
-  const raf = useRef();
-  const pattern = patternFor(name);
-  const pose = POSES[pattern] || POSES.core;
-
-  useEffect(() => {
-    if (!playing) return;
-    let start = null;
-    const loop = (ts) => {
-      if (start === null) start = ts;
-      const cycle = 1800;
-      const phase = ((ts - start) % cycle) / cycle;
-      const raw = phase < 0.5 ? phase * 2 : (1 - phase) * 2;
-      setT(raw < 0.5 ? 2 * raw * raw : 1 - Math.pow(-2 * raw + 2, 2) / 2);
-      raf.current = requestAnimationFrame(loop);
-    };
-    raf.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf.current);
-  }, [playing, pattern]);
-
-  const lerp = (k) => {
-    const [ax, ay] = pose.a[k], [bx, by] = pose.b[k];
-    return [ax + (bx - ax) * t, ay + (by - ay) * t];
-  };
-  const P = {
-    head: lerp("head"), neck: lerp("neck"), hip: lerp("hip"),
-    knee: lerp("knee"), ankle: lerp("ankle"), elbow: lerp("elbow"), hand: lerp("hand"),
-  };
-  const line = (a, b, w, col, op = 1) => (
-    <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={col} strokeWidth={w} strokeLinecap="round" opacity={op} />
-  );
-
-  return (
-    <svg viewBox="0 0 100 120" style={{ width: size, height: size * 1.2, display: "block" }}>
-      <g opacity=".18">
-        {line(pose.b.neck, pose.b.hip, 9, c.muted)}
-        {line(pose.b.hip, pose.b.knee, 7, c.muted)}
-        {line(pose.b.knee, pose.b.ankle, 6, c.muted)}
-        {line(pose.b.neck, pose.b.elbow, 6, c.muted)}
-        {line(pose.b.elbow, pose.b.hand, 5, c.muted)}
-        <circle cx={pose.b.head[0]} cy={pose.b.head[1]} r="8" fill={c.muted} />
-      </g>
-      <line x1="4" y1="114" x2="96" y2="114" stroke={c.border} strokeWidth="2" strokeLinecap="round" />
-      {line([P.hip[0] - 3, P.hip[1]], [P.knee[0] - 6, P.knee[1]], 7, c.turqDeep, .55)}
-      {line([P.knee[0] - 6, P.knee[1]], [P.ankle[0] - 6, P.ankle[1]], 6, c.turqDeep, .55)}
-      {line(P.neck, P.hip, 10, c.red)}
-      {line(P.hip, P.knee, 8, c.turq)}
-      {line(P.knee, P.ankle, 6.5, c.turq)}
-      {line(P.neck, P.elbow, 6.5, c.red)}
-      {line(P.elbow, P.hand, 5.5, c.red)}
-      <circle cx={P.head[0]} cy={P.head[1]} r="8.5" fill={c.text} />
-    </svg>
-  );
 }
 
 /* ═══════════════════════ ANATOMY DIAGRAM ═══════════════════════ */
@@ -1971,14 +1719,6 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
                 }}>{on && <Check size={15} color="#fff" strokeWidth={3.5} />}</button>
 
                 <button onClick={() => setOpenDemo(openDemo === i ? null : i)} style={{
-                  width: 52, height: 58, borderRadius: 11, flexShrink: 0, cursor: "pointer", padding: 0,
-                  border: `1px solid ${c.border}`, background: c.bgEl2, overflow: "hidden",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <ExerciseDemo c={c} name={e.name} size={44} />
-                </button>
-
-                <button onClick={() => setOpenDemo(openDemo === i ? null : i)} style={{
                   flex: 1, background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0, minWidth: 0,
                 }}>
                   <div style={{ fontFamily: "Inter", fontSize: 10, color: c.muted, fontWeight: 800, letterSpacing: .8 }}>
@@ -1997,17 +1737,11 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
               </div>
 
               {openDemo === i && (
-                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${c.border}`,
-                  display: "flex", alignItems: "center", gap: 14 }}>
-                  <div style={{ background: c.bgEl2, borderRadius: 13, padding: 6 }}>
-                    <ExerciseDemo c={c} name={e.name} size={92} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "Inter", fontSize: 10.5, fontWeight: 800, letterSpacing: 1,
-                      color: c.turq, marginBottom: 5 }}>MOVEMENT DEMO</div>
-                    <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.muted, lineHeight: 1.55 }}>
-                      {explainFor(e.name)}
-                    </div>
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${c.border}` }}>
+                  <div style={{ fontFamily: "Inter", fontSize: 10.5, fontWeight: 800, letterSpacing: 1,
+                    color: c.turq, marginBottom: 6 }}>HOW TO DO IT</div>
+                  <div style={{ fontFamily: "Inter", fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>
+                    {explainFor(e.name)}
                   </div>
                 </div>
               )}
@@ -2107,14 +1841,6 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
                 }}>{on && <Check size={15} color="#fff" strokeWidth={3.5} />}</button>
 
                 <button onClick={() => setOpenCoreDemo(openCoreDemo === i ? null : i)} style={{
-                  width: 52, height: 58, borderRadius: 11, flexShrink: 0, cursor: "pointer", padding: 0,
-                  border: `1px solid ${c.border}`, background: c.bgEl2, overflow: "hidden",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  <ExerciseDemo c={c} name={e.name} size={44} />
-                </button>
-
-                <button onClick={() => setOpenCoreDemo(openCoreDemo === i ? null : i)} style={{
                   flex: 1, background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0, minWidth: 0,
                 }}>
                   <div style={{ fontFamily: "Inter", fontSize: 10, color: c.red, fontWeight: 800, letterSpacing: .8 }}>
@@ -2126,17 +1852,11 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
               </div>
 
               {openCoreDemo === i && (
-                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${c.border}`,
-                  display: "flex", alignItems: "center", gap: 14 }}>
-                  <div style={{ background: c.bgEl2, borderRadius: 13, padding: 6 }}>
-                    <ExerciseDemo c={c} name={e.name} size={92} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "Inter", fontSize: 10.5, fontWeight: 800, letterSpacing: 1,
-                      color: c.turq, marginBottom: 5 }}>MOVEMENT DEMO</div>
-                    <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.muted, lineHeight: 1.55 }}>
-                      {explainFor(e.name)}
-                    </div>
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${c.border}` }}>
+                  <div style={{ fontFamily: "Inter", fontSize: 10.5, fontWeight: 800, letterSpacing: 1,
+                    color: c.turq, marginBottom: 6 }}>HOW TO DO IT</div>
+                  <div style={{ fontFamily: "Inter", fontSize: 12.5, color: c.text, lineHeight: 1.6 }}>
+                    {explainFor(e.name)}
                   </div>
                 </div>
               )}
@@ -2366,83 +2086,6 @@ function MealsScreen({ c, tier, onUpgrade, onLog }) {
   );
 }
 
-/* ═══════════════════════ CHECKOUT ═══════════════════════ */
-function Checkout({ c, plan, email, onBack, onSuccess }) {
-  const [card, setCard] = useState({ email: email || "", number: "", exp: "", cvc: "", name: "", zip: "" });
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
-  const up = (k, v) => setCard(p => ({ ...p, [k]: v }));
-  const fmtNum = v => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-  const fmtExp = v => { const d = v.replace(/\D/g, "").slice(0, 4); return d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d; };
-
-  const valid = card.email.includes("@") && card.number.replace(/\s/g, "").length === 16
-    && card.exp.length === 5 && card.cvc.length >= 3 && card.name.trim() && card.zip.length >= 5;
-
-  const pay = async () => {
-    setErr(""); setBusy(true);
-    try { await processPayment({ plan, card }); onSuccess(plan); }
-    catch (e) { setErr(e.message); }
-    finally { setBusy(false); }
-  };
-
-  return (
-    <div style={{ padding: "18px 18px 120px" }}>
-      <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
-        color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
-        <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
-      </button>
-      <Disp c={c} size={30} style={{ marginBottom: 4 }}>CHECKOUT</Disp>
-      <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18 }}>
-        {plan.name} — {plan.price}. Cancel anytime.
-      </div>
-
-      <Card c={c} style={{ marginBottom: 14, background: c.turqDim, border: `1px solid ${c.turq}` }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <div style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 800, color: c.text }}>{plan.name}</div>
-            <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.muted, marginTop: 3 }}>7-day free trial, then billed monthly</div>
-          </div>
-          <Disp c={c} size={26} style={{ color: c.turq }}>{plan.price}</Disp>
-        </div>
-      </Card>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 16 }}>
-        <Field c={c} label="Email" value={card.email} placeholder="you@email.com" onChange={e => up("email", e.target.value)} />
-        <Field c={c} label="Card Number" value={card.number} placeholder="4242 4242 4242 4242" inputMode="numeric"
-          onChange={e => up("number", fmtNum(e.target.value))} />
-        <div style={{ display: "flex", gap: 10 }}>
-          <div style={{ flex: 1 }}>
-            <Field c={c} label="Expiry" value={card.exp} placeholder="MM/YY" inputMode="numeric" onChange={e => up("exp", fmtExp(e.target.value))} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Field c={c} label="CVC" value={card.cvc} placeholder="123" inputMode="numeric"
-              onChange={e => up("cvc", e.target.value.replace(/\D/g, "").slice(0, 4))} />
-          </div>
-        </div>
-        <Field c={c} label="Name on Card" value={card.name} placeholder="Jordan Reyes" onChange={e => up("name", e.target.value)} />
-        <Field c={c} label="ZIP" value={card.zip} placeholder="90210" inputMode="numeric"
-          onChange={e => up("zip", e.target.value.replace(/\D/g, "").slice(0, 5))} />
-      </div>
-
-      {err && (
-        <div style={{ background: c.redDim, border: `1px solid ${c.red}`, borderRadius: 12, padding: 12, marginBottom: 14,
-          fontFamily: "Inter", fontSize: 12.5, color: c.red, fontWeight: 600 }}>{err}</div>
-      )}
-
-      <button onClick={pay} disabled={!valid || busy} style={btn(c, !valid || busy)}>
-        {busy ? "Processing…" : <>Start Free Trial <Shield size={17} /></>}
-      </button>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 14, justifyContent: "center" }}>
-        <Lock size={12} color={c.muted} />
-        <span style={{ fontFamily: "Inter", fontSize: 11, color: c.muted }}>
-          {PAYMENT_CONFIG.liveMode ? "Secured by Stripe" : "Demo mode — no card is charged"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
 /* ═══════════════════════ REWARDS (optional, toggle anytime) ═══════════════════════ */
 const REWARD_PRESETS = [
   { days: 3, treat: "Sweet treat this weekend" },
@@ -2625,7 +2268,7 @@ function RewardsScreen({ c, p, rewards, setRewards, onClaim, toast }) {
 }
 
 /* ═══════════════════════ PROFILE ═══════════════════════ */
-function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onProgress, toast, onAdmin }) {
+function ProfileScreen({ c, p, setP, dark, setDark, onSignOut, onProgress, toast, onAdmin }) {
   const [edit, setEdit] = useState(false);
 
   const handleSave = (draft) => {
@@ -2764,6 +2407,14 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
       </Card>
 
       <Label c={c}>Subscription</Label>
+      <div style={{ background: c.turqDim, border: `1px solid ${c.turq}`, borderRadius: 13,
+        padding: 13, marginBottom: 12, display: "flex", gap: 10, alignItems: "flex-start" }}>
+        <Mail size={15} color={c.turq} style={{ flexShrink: 0, marginTop: 2 }} />
+        <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.text, lineHeight: 1.55 }}>
+          After you subscribe, Dr. Smith will reach out on Instagram within 24 hours to
+          start your personalized guidance. Use the same email at checkout that you use here.
+        </div>
+      </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
         {PLANS.map(pl => {
           const cur = p.tier === pl.id;
@@ -2787,10 +2438,11 @@ function ProfileScreen({ c, p, setP, dark, setDark, onCheckout, onSignOut, onPro
                   color: c.muted, fontFamily: "Inter", fontWeight: 700, fontSize: 12, cursor: "pointer",
                 }}>Downgrade</button>
               ) : (
-                <button onClick={() => onCheckout(pl)} style={{
+                <a href={STRIPE_PREMIUM_LINK} target="_blank" rel="noopener noreferrer" style={{
                   padding: "9px 15px", borderRadius: 10, border: "none", background: c.red, color: "#fff",
                   fontFamily: "Inter", fontWeight: 800, fontSize: 12, cursor: "pointer",
-                }}>Start 7-Day Free Trial</button>
+                  textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6,
+                }}>Get Premium <ExternalLink size={13} /></a>
               )}
             </Card>
           );
@@ -3178,7 +2830,6 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState(null);
   const [confetti, setConfetti] = useState(0);
   const [modal, setModal] = useState(null);
-  const [checkoutPlan, setCheckoutPlan] = useState(null);
   const [custom, setCustom] = useState({});
 
   const [p, setP] = useState({
@@ -3317,12 +2968,6 @@ export default function App() {
     toast(f.name ? `Welcome, ${f.name}. Your plan is live 🔥` : "Plan locked in. Let's train 🔥");
   };
 
-  const goCheckout = (plan) => { setCheckoutPlan(plan); setTab("checkout"); };
-  const paySuccess = (plan) => {
-    setP(x => ({ ...x, tier: plan.id, freezes: x.freezes + 3 }));
-    setCheckoutPlan(null); setTab("profile"); celebrate();
-    toast(`${plan.name} active — trial started`);
-  };
 
   const logMeal = (r) => {
     setCals(x => ({ ...x, entries: [...x.entries, { id: Date.now(), name: r.name, cal: r.cal }] }));
@@ -3340,16 +2985,25 @@ export default function App() {
         ${FONTS}
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { display: none; }
-        /* Lock the page so the app owns the whole screen, like a native app */
+        /* Lock the page so the app owns the whole screen, like a native app.
+           Overrides anything the host page sets on html/body/#root. */
         html, body {
-          margin: 0; padding: 0; height: 100%;
-          background: ${c.bg}; overscroll-behavior: none;
+          margin: 0 !important; padding: 0 !important;
+          height: 100% !important; width: 100% !important;
+          background: ${c.bg} !important;
+          overscroll-behavior: none; overflow: hidden !important;
+          display: block !important;
         }
-        body { overflow: hidden; }
-        /* Phones: edge to edge, no gaps, notch and home indicator respected */
+        #root {
+          margin: 0 !important; padding: 0 !important;
+          height: 100% !important; width: 100% !important;
+          display: block !important; min-height: 0 !important;
+        }
+        /* Anchoring to all four edges avoids the 100%-vs-toolbar problem on iOS */
         .aac-frame {
-          position: fixed !important; inset: 0 !important;
-          width: 100% !important; max-width: none !important; height: 100% !important;
+          position: fixed !important;
+          top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important;
+          width: auto !important; height: auto !important; max-width: none !important;
           margin: 0 !important; border-radius: 0 !important; border: none !important;
           box-shadow: none !important;
         }
@@ -3366,10 +3020,13 @@ export default function App() {
         /* Desktop / tablet: show it as a phone-shaped frame again */
         /* Desktop / tablet: restore the centred phone-shaped frame */
         @media (min-width: 480px) and (min-height: 700px) {
-          body { overflow: auto; display: flex; justify-content: center; align-items: center; }
+          html, body { overflow: auto !important; }
+          body { display: flex !important; justify-content: center; align-items: center; }
+          #root { display: flex !important; justify-content: center; height: auto !important; }
           .aac-frame {
-            position: relative !important; inset: auto !important;
-            max-width: 420px !important; margin: 0 auto !important;
+            position: relative !important;
+            top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+            width: 100% !important; max-width: 420px !important; margin: 0 auto !important;
             height: min(860px, calc(100dvh - 24px)) !important;
             border-radius: 34px !important; border: 1px solid ${c.border} !important;
             box-shadow: 0 24px 70px rgba(0,0,0,.4) !important;
@@ -3418,20 +3075,17 @@ export default function App() {
             {tab === "track" && <TrackScreen c={c} water={water} setWater={setWater} cals={cals} setCals={setCals} toast={toast} />}
             {tab === "meals" && <MealsScreen c={c} tier={p.tier} onLog={logMeal} onUpgrade={() => setTab("profile")} />}
             {tab === "profile" && <ProfileScreen c={c} p={p} setP={setP} dark={dark} setDark={setDark}
-              onCheckout={goCheckout} onSignOut={signOut} onProgress={onProgress} toast={toast}
+              onSignOut={signOut} onProgress={onProgress} toast={toast}
               onRewards={() => setTab("rewards")} rewards={rewards} onAdmin={() => setTab("admin")} />}
             {tab === "admin" && <AdminScreen c={c} p={p} water={water} cals={cals} rewards={rewards}
               custom={custom} onBack={() => setTab("profile")} toast={toast} />}
-            {tab === "checkout" && checkoutPlan && (
-              <Checkout c={c} plan={checkoutPlan} email={p.email} onBack={() => setTab("profile")} onSuccess={paySuccess} />
-            )}
           </>
         )}
           </>
         )}
       </div>
 
-      {stage === "app" && tab !== "checkout" && tab !== "admin" && <Nav c={c} active={tab} set={setTab} />}
+      {stage === "app" && tab !== "admin" && <Nav c={c} active={tab} set={setTab} />}
     </div>
   );
 }
