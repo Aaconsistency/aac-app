@@ -1160,7 +1160,7 @@ function SessionsScreen({ c, p }) {
   );
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>1:1 SESSIONS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18, lineHeight: 1.55 }}>
         The app handles the plan. For hands-on coaching, book an in-person session with the trainer.
@@ -1344,7 +1344,7 @@ function HomeScreen({ c, p, water, cals, badges, quests, rewards, onTrain, onSes
   const ring = 168, r = 74, circ = 2 * Math.PI * r;
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div>
           <div style={{ fontFamily: "Inter", fontSize: 12, color: c.muted, fontWeight: 700 }}>
@@ -1613,7 +1613,7 @@ function TrainScreen({ c, p, setP, toast, celebrate, custom, setCustom }) {
   }));
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>TRAIN</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18 }}>
         Built around your gear, your level, and what you're protecting.
@@ -1903,7 +1903,7 @@ function TrackScreen({ c, water, setWater, cals, setCals, toast }) {
   };
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 18 }}>TRACK</Disp>
 
       <Card c={c} style={{ marginBottom: 14 }}>
@@ -1983,7 +1983,7 @@ function MealsScreen({ c, tier, onUpgrade, onLog }) {
   if (open) {
     const r = open;
     return (
-      <div style={{ padding: "0 0 96px" }}>
+      <div style={{ padding: "0 0 24px" }}>
         <div style={{ height: 190, position: "relative" }}>
           {FoodArt[r.art]}
           <button onClick={() => setOpen(null)} style={{
@@ -2031,7 +2031,7 @@ function MealsScreen({ c, tier, onUpgrade, onLog }) {
   }
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>MEALS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 16 }}>Real food. Minimal effort. No sad chicken.</div>
 
@@ -2123,7 +2123,7 @@ function RewardsScreen({ c, p, rewards, setRewards, onClaim, toast }) {
   const totalEarned = rewards.list.reduce((s, r) => s + r.earned, 0);
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <Disp c={c} size={30} style={{ marginBottom: 4 }}>MY REWARDS</Disp>
       <div style={{ fontFamily: "Inter", fontSize: 13, color: c.muted, marginBottom: 18, lineHeight: 1.55 }}>
         Pick a treat, pick the streak that earns it. Totally optional — turn it on or off whenever you want.
@@ -2298,7 +2298,7 @@ function ProfileScreen({ c, p, setP, dark, setDark, onSignOut, onProgress, toast
   ];
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <Disp c={c} size={30}>PROFILE</Disp>
         <button onClick={() => setEdit(true)} style={{
@@ -2486,7 +2486,7 @@ function ProfileEditor({ c, p, onSave, onCancel }) {
   const ok = d.goalBodies.length > 0 && (!d.email || d.email.includes("@"));
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <Disp c={c} size={30}>EDIT PROFILE</Disp>
         <button onClick={onCancel} style={{
@@ -2661,7 +2661,7 @@ function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
   }, [ok]);
 
   if (!ok) return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
         color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
         <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
@@ -2702,7 +2702,7 @@ function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
   };
 
   return (
-    <div style={{ padding: "18px 18px 96px" }}>
+    <div style={{ padding: "18px 18px 24px" }}>
       <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer",
         color: c.muted, display: "flex", alignItems: "center", gap: 6, padding: 0, marginBottom: 16 }}>
         <ArrowLeft size={17} /><span style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600 }}>Back</span>
@@ -2812,7 +2812,7 @@ function Nav({ c, active, set }) {
             flex: 1, minWidth: 0, position: "relative",
           }}>
             <div style={{
-              position: "absolute", top: -8, left: "26%", right: "26%", height: 3,
+              position: "absolute", bottom: -5, left: "30%", right: "30%", height: 3,
               borderRadius: 999, background: on ? c.red : "transparent",
               transition: "background .18s",
             }} />
@@ -3014,27 +3014,45 @@ export default function App() {
         }
         .aac-scroll {
           height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+          padding-top: calc(54px + env(safe-area-inset-top, 0px));
+          padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+        }
+        .aac-scroll.no-header {
           padding-top: env(safe-area-inset-top, 0px);
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* Fixed app header. Extends up through the notch; content scrolls behind it. */
+        /* Floating frosted header — content scrolls underneath it */
         .aac-header {
           position: absolute; top: 0; left: 0; right: 0; z-index: 45;
           padding-top: env(safe-area-inset-top, 0px);
-          background: ${c.bgEl};
-          border-bottom: 1px solid ${c.border};
+          background: ${dark ? "rgba(16,14,20,.72)" : "rgba(255,255,255,.72)"};
+          backdrop-filter: blur(22px) saturate(160%);
+          -webkit-backdrop-filter: blur(22px) saturate(160%);
+          border-bottom: 1px solid ${dark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)"};
         }
         .aac-header-in {
           height: 54px; display: flex; align-items: center;
           justify-content: space-between; padding: 0 16px;
         }
-        /* Content starts below the header */
-        .aac-scroll { padding-top: calc(54px + env(safe-area-inset-top, 0px)) !important; }
-        .aac-scroll.no-header { padding-top: env(safe-area-inset-top, 0px) !important; }
-        /* Flush to the bottom edge — no reserved space under the labels */
+
+        /* Nav sits at the end of the flex column, flush to the screen edge.
+           The home-indicator inset is padding ON the bar, so its background
+           continues all the way down instead of leaving a strip. */
+        /* Floating frosted tab bar — the page continues behind and below it */
         .aac-nav {
+          position: absolute !important;
+          left: 10px !important; right: 10px !important;
+          bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important;
           height: auto !important;
-          padding-top: 8px !important;
-          padding-bottom: 8px !important;
+          padding: 9px 4px 8px !important;
+          border-radius: 24px !important;
+          background: ${dark ? "rgba(24,21,29,.78)" : "rgba(255,255,255,.8)"} !important;
+          backdrop-filter: blur(22px) saturate(160%);
+          -webkit-backdrop-filter: blur(22px) saturate(160%);
+          border: 1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)"} !important;
+          border-top: 1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)"} !important;
+          box-shadow: 0 8px 30px rgba(0,0,0,.35);
         }
         .aac-toast { top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
         /* Desktop / tablet: show it as a phone-shaped frame again */
