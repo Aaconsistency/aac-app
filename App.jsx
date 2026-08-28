@@ -2812,7 +2812,7 @@ function Nav({ c, active, set }) {
             flex: 1, minWidth: 0, position: "relative",
           }}>
             <div style={{
-              position: "absolute", top: -8, left: "26%", right: "26%", height: 3,
+              position: "absolute", bottom: -5, left: "30%", right: "30%", height: 3,
               borderRadius: 999, background: on ? c.red : "transparent",
               transition: "background .18s",
             }} />
@@ -2995,7 +2995,7 @@ export default function App() {
         html, body {
           margin: 0 !important; padding: 0 !important;
           height: 100% !important; width: 100% !important;
-          background: ${c.bgEl} !important;
+          background: ${c.bg} !important;
           overscroll-behavior: none; overflow: hidden !important;
           display: block !important;
         }
@@ -3011,37 +3011,48 @@ export default function App() {
           width: auto !important; height: auto !important; max-width: none !important;
           margin: 0 !important; border-radius: 0 !important; border: none !important;
           box-shadow: none !important;
-          display: flex !important; flex-direction: column !important;
         }
         .aac-scroll {
-          flex: 1 1 auto; min-height: 0;
-          overflow-y: auto; -webkit-overflow-scrolling: touch;
+          height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch;
+          padding-top: calc(54px + env(safe-area-inset-top, 0px));
+          padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+        }
+        .aac-scroll.no-header {
           padding-top: env(safe-area-inset-top, 0px);
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* Fixed app header. Extends up through the notch; content scrolls behind it. */
+        /* Floating frosted header — content scrolls underneath it */
         .aac-header {
-          flex: 0 0 auto; z-index: 45;
+          position: absolute; top: 0; left: 0; right: 0; z-index: 45;
           padding-top: env(safe-area-inset-top, 0px);
-          background: ${c.bgEl};
-          border-bottom: 1px solid ${c.border};
+          background: ${dark ? "rgba(16,14,20,.72)" : "rgba(255,255,255,.72)"};
+          backdrop-filter: blur(22px) saturate(160%);
+          -webkit-backdrop-filter: blur(22px) saturate(160%);
+          border-bottom: 1px solid ${dark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)"};
         }
         .aac-header-in {
           height: 54px; display: flex; align-items: center;
           justify-content: space-between; padding: 0 16px;
         }
-        /* Header is in normal flow now; scroll area only pads when there is no header */
-        .aac-scroll { padding-top: 0 !important; }
-        .aac-scroll.no-header { padding-top: env(safe-area-inset-top, 0px) !important; }
+
         /* Nav sits at the end of the flex column, flush to the screen edge.
            The home-indicator inset is padding ON the bar, so its background
            continues all the way down instead of leaving a strip. */
+        /* Floating frosted tab bar — the page continues behind and below it */
         .aac-nav {
-          position: relative !important;
-          bottom: auto !important; left: auto !important; right: auto !important;
-          flex: 0 0 auto;
+          position: absolute !important;
+          left: 10px !important; right: 10px !important;
+          bottom: calc(6px + env(safe-area-inset-bottom, 0px)) !important;
           height: auto !important;
-          padding-top: 8px !important;
-          padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+          padding: 9px 4px 8px !important;
+          border-radius: 24px !important;
+          background: ${dark ? "rgba(24,21,29,.78)" : "rgba(255,255,255,.8)"} !important;
+          backdrop-filter: blur(22px) saturate(160%);
+          -webkit-backdrop-filter: blur(22px) saturate(160%);
+          border: 1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)"} !important;
+          border-top: 1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.07)"} !important;
+          box-shadow: 0 8px 30px rgba(0,0,0,.35);
         }
         .aac-toast { top: calc(14px + env(safe-area-inset-top, 0px)) !important; }
         /* Desktop / tablet: show it as a phone-shaped frame again */
