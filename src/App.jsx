@@ -2720,14 +2720,7 @@ function AdminScreen({ c, p, water, cals, rewards, custom, onBack, toast }) {
           fontFamily: "Inter", fontSize: 9, fontWeight: 900, letterSpacing: 1 }}>UNLOCKED</span>
       </div>
 
-      <div style={{ background: c.redDim, border: `1px solid ${c.red}`, borderRadius: 13, padding: 13,
-        marginBottom: 16, display: "flex", gap: 10, alignItems: "flex-start" }}>
-        <ShieldAlert size={16} color={c.red} style={{ flexShrink: 0, marginTop: 1 }} />
-        <div style={{ fontFamily: "Inter", fontSize: 11.5, color: c.text, lineHeight: 1.55 }}>
-          This device only. The app has no server yet, so it can't show other people's accounts.
-          Cross-user tracking needs logins and a database — see the notes below.
-        </div>
-      </div>
+    
 
       <Label c={c}>This Account</Label>
       <Card c={c} style={{ marginBottom: 16, paddingBlock: 8 }}>
